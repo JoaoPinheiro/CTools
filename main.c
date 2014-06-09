@@ -408,14 +408,23 @@ void testDamagedList() {
 
 int main() {
 	testCreateAndFree();
+	getc(stdin);
 	testBasicOperations();
+	getc(stdin);
 	testRepeatItems();
+	getc(stdin);
 	testMapLinkedList();
+	getc(stdin);
 	testInvalidArguments();
+	getc(stdin);
 	testWithoutConstructor();
+	getc(stdin);
 	testWithoutDestructor();
+	getc(stdin);
 	testWithoutEquals();
+	getc(stdin);
 	testDamagedList();
+	getc(stdin);
 
 	return 0;
 }

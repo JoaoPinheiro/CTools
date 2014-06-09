@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include "list.h"
 
+static void printCToolsMessage(char *location, char *message) {
+	if ((location != NULL) && (message != NULL)) {
+		fprintf(stderr, "[CTools] %s: %s\n", location, message);
+	}
+}
+
 /* Creates a new linked list structure */
 linkedlist* createLinkedList() {
 	linkedlist *list = NULL;
@@ -9,13 +15,13 @@ linkedlist* createLinkedList() {
 
 	list = malloc(sizeof(linkedlist));
 	if (list == NULL) {
-		fprintf(stderr, "[CTools] createLinkedList Error: Not enough memory\n");
+		printCToolsMessage("createLinkedList", "Not enough memory");
 		return NULL;
 	}
 
 	dummynode = malloc(sizeof(struct _list_node_));
 	if (dummynode == NULL) {
-		fprintf(stderr, "[CTools] createLinkedList Error: Not enough memory\n");
+		printCToolsMessage("createLinkedList", "Not enough memory");
 		return NULL;
 	}
 
@@ -34,30 +40,31 @@ void freeLinkedList(linkedlist *list) {
 	struct _list_node_ *currentnode = NULL;
 
 	if (list == NULL) {
-		fprintf(stderr, "[CTools] freeLinkedList Error: List is NULL\n");
+		printCToolsMessage("freeLinkedList", "List is NULL");
 		return;
 	} else if (list->head == NULL) {
-		fprintf(stderr, "[CTools] freeLinkedList Error: List HEAD is NULL\n");
+		printCToolsMessage("freeLinkedList", "List HEAD is NULL");
 		return;
 	} else if (list->destructor == NULL) {
-		fprintf(stderr, "[CTools] freeLinkedList Error: Destructor function is NULL\n");
+		printCToolsMessage("freeLinkedList", "Destructor function is NULL");
 		return;
 	}
 
-	nextnode = list->head;
+	nextnode = list->head->next;
 	currentnode = NULL;
 
 	while (nextnode != NULL) {
 		currentnode = nextnode;
 		nextnode = currentnode->next;
 		if (currentnode->value == NULL) {
-			fprintf(stderr, "[CTools] freeLinkedList Warning: Contained value is NULL\n");
+			printCToolsMessage("freeLinkedList", "Contained value is NULL");
 		} else {
 			list->destructor(currentnode->value);
 		}
 		free(currentnode);
 	}
 
+	free(list->head);
 	free(list);
 }
 
@@ -66,22 +73,22 @@ void addNode(linkedlist *list, void *value) {
 	struct _list_node_ *newnode = NULL;
 
 	if (value == NULL) {
-		fprintf(stderr, "[CTools] addNode Error: Value is NULL\n");
+		printCToolsMessage("addNode","Value is NULL");
 		return;
 	} else if (list == NULL) {
-		fprintf(stderr, "[CTools] addNode Error: List is NULL\n");
+		printCToolsMessage("addNode","List is NULL");
 		return;
 	} else if (list->head == NULL) {
-		fprintf(stderr, "[CTools] addNode Error: List HEAD is NULL\n");
+		printCToolsMessage("addNode","List HEAD is NULL");
 		return;
 	} else if (list->constructor == NULL) {
-		fprintf(stderr, "[CTools] addNode Error: Constructor function is NULL\n");
+		printCToolsMessage("addNode","Constructor function is NULL");
 		return;
 	}
 
 	newnode = malloc(sizeof(struct _list_node_));
 	if (newnode == NULL) {
-		fprintf(stderr, "[CTools] addNode Error: Not enough memory\n");
+		printCToolsMessage("addNode","Not enough memory");
 		return;
 	}
 
@@ -96,19 +103,19 @@ void removeNode(linkedlist *list, void *value) {
 	struct _list_node_ *currentnode = NULL;
 
 	if (value == NULL) {
-		fprintf(stderr, "[CTools] removeNode Error: Value is NULL\n");
+		printCToolsMessage("removeNode", "Value is NULL");
 		return;
 	} else if (list == NULL) {
-		fprintf(stderr, "[CTools] removeNode Error: List is NULL\n");
+		printCToolsMessage("removeNode","List is NULL");
 		return;
 	} else if (list->head == NULL) {
-		fprintf(stderr, "[CTools] removeNode Error: List HEAD is NULL\n");
+		printCToolsMessage("removeNode","List HEAD is NULL");
 		return;
 	} else if (list->equals == NULL) {
-		fprintf(stderr, "[CTools] removeNode Error: Equals function is NULL\n");
+		printCToolsMessage("removeNode","Equals function is NULL");
 		return;
 	} else if (list->destructor == NULL) {
-		fprintf(stderr, "[CTools] removeNode Error: Destructor function is NULL\n");
+		printCToolsMessage("removeNode","Destructor function is NULL");
 		return;
 	}
 
@@ -117,7 +124,7 @@ void removeNode(linkedlist *list, void *value) {
 
 	while (currentnode != NULL) {
 		if (currentnode->value == NULL) {
-			fprintf(stderr, "[CTools] removeNode Warning: Contained value is NULL\n");
+			printCToolsMessage("removeNode", "Contained value is NULL");
 			currentnode = currentnode->next;
 		} else if (list->equals(currentnode->value, value)) {
 			previousnode->next = currentnode->next;
@@ -136,16 +143,16 @@ int containsValue(linkedlist *list, void *value) {
 	struct _list_node_ *node = NULL;
 
 	if (value == NULL) {
-		fprintf(stderr, "[CTools] containsValue Error: Value is NULL\n");
+		printCToolsMessage("containsValue", "Value is NULL");
 		return 0;
 	} else if (list == NULL) {
-		fprintf(stderr, "[CTools] containsValue Error: List is NULL\n");
+		printCToolsMessage("containsValue", "List is NULL");
 		return 0;
 	} else if (list->head == NULL) {
-		fprintf(stderr, "[CTools] containsValue Error: List HEAD is NULL\n");
+		printCToolsMessage("containsValue", "List HEAD is NULL");
 		return 0;
 	} else if (list->equals == NULL) {
-		fprintf(stderr, "[CTools] containsValue Error: Equals function is NULL\n");
+		printCToolsMessage("containsValue", "Equals function is NULL");
 		return 0;
 	}
 
@@ -153,7 +160,7 @@ int containsValue(linkedlist *list, void *value) {
 
 	while (node != NULL) {
 		if (node->value == NULL) {
-			fprintf(stderr, "[CTools] containsValue Warning: Contained value is NULL\n");
+			printCToolsMessage("containsValue", "Contained value is NULL");
 		} else if (list->equals(node->value, value)) {
 			return 1;
 		}
@@ -167,13 +174,13 @@ void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 	struct _list_node_ *node = NULL;
 
 	if (funcp == NULL) {
-		fprintf(stderr, "[CTools] mapLinkedList Error: Function is NULL\n");
+		printCToolsMessage("mapLinkedList", "Function is NULL");
 		return;
 	} else if (list == NULL) {
-		fprintf(stderr, "[CTools] mapLinkedList Error: List is NULL\n");
+		printCToolsMessage("mapLinkedList", "List is NULL");
 		return;
 	} else if (list->head == NULL) {
-		fprintf(stderr, "[CTools] mapLinkedList Error: List HEAD is NULL\n");
+		printCToolsMessage("mapLinkedList", "List HEAD is NULL");
 		return;
 	}
 
@@ -181,7 +188,7 @@ void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 
 	while (node != NULL) {
 		if (node->value == NULL) {
-			fprintf(stderr, "[CTools] mapLinkedList Warning: Contained value is NULL\n");
+			printCToolsMessage("mapLinkedList", "Contained value is NULL");
 		} else {
 			(*funcp)(node->value);
 		}
