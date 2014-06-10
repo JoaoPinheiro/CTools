@@ -42,7 +42,7 @@ void testCreateAndFree() {
 		exit(-1);
 	}
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 
 	printf("Passed\n");
 }
@@ -82,7 +82,7 @@ void testBasicOperations() {
 		exit(-1);
 	}
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 
 	printf("Passed\n");
 }
@@ -163,7 +163,7 @@ void testSeveralItems() {
 		exit(-1);
 	}
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 
 	printf("Passed\n");
 }
@@ -226,7 +226,7 @@ void testRepeatItems() {
 		exit(-1);
 	}
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 
 	printf("Passed\n");
 }
@@ -274,7 +274,7 @@ void testGetLinkedListValueReference() {
 		exit(-1);
 	}
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 
 	printf("Passed\n");
 }
@@ -301,7 +301,7 @@ void testMapLinkedList() {
 	printf("Print list {1, 2, 3}:\n");
 	mapLinkedList(list, &printElement);
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 }
 
 void testDeepCopyLinkedList() {
@@ -332,7 +332,7 @@ void testDeepCopyLinkedList() {
 	mapLinkedList(list, &printElement);
 	printf("Print new list {}:\n");
 	mapLinkedList(newlist, &printElement);
-	freeLinkedList(newlist);
+	freeLinkedList(newlist, DEEP);
 
 	newlist = NULL;
 	newlist = copyLinkedList(list, DEEP);
@@ -361,8 +361,8 @@ void testDeepCopyLinkedList() {
 	printf("Print new list {1, 2, 3}:\n");
 	mapLinkedList(newlist, &printElement);
 
-	freeLinkedList(newlist);
-	freeLinkedList(list);
+	freeLinkedList(newlist, DEEP);
+	freeLinkedList(list, DEEP);
 }
 
 void testShallowCopyLinkedList() {
@@ -393,7 +393,7 @@ void testShallowCopyLinkedList() {
 	mapLinkedList(list, &printElement);
 	printf("Print new list {}:\n");
 	mapLinkedList(newlist, &printElement);
-	freeLinkedListShallow(newlist);
+	freeLinkedList(newlist, SHALLOW);
 
 	newlist = NULL;
 	newlist = copyLinkedList(list, SHALLOW);
@@ -422,8 +422,8 @@ void testShallowCopyLinkedList() {
 	printf("Print new list {1, 4, 3}:\n");
 	mapLinkedList(newlist, &printElement);
 
-	freeLinkedListShallow(newlist);
-	freeLinkedList(list);
+	freeLinkedList(newlist, SHALLOW);
+	freeLinkedList(list, DEEP);
 }
 
 void testLinkedListToArray() {
@@ -482,7 +482,7 @@ void testLinkedListToArray() {
 	}
 
 	free(array);
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 }
 
 void testInvalidArguments() {
@@ -494,9 +494,6 @@ void testInvalidArguments() {
 	list->destructor = &destructor;
 
 	printf("\n# Start testInvalidArguments()\n");
-
-	printf("freeLinkedList(NULL):\n");
-	freeLinkedList(NULL);
 
 	printf("addNode(NULL, 1):\n");
 	tmp = 1;
@@ -523,9 +520,6 @@ void testInvalidArguments() {
 	printf("copyLinkedList(NULL, DEEP):\n");
 	copyLinkedList(NULL, DEEP);
 
-	printf("copyLinkedList(NULL, SHALLOW):\n");
-	copyLinkedList(NULL, SHALLOW);
-
 	printf("linkedListToArray(NULL, NULL):\n");
 	linkedListToArray(NULL, NULL);
 
@@ -535,10 +529,10 @@ void testInvalidArguments() {
 	printf("linkedListToArray(NULL, &size):\n");
 	linkedListToArray(NULL, &size);
 
-	printf("freeLinkedList(NULL):\n");
-	freeLinkedList(NULL);
+	printf("freeLinkedList(NULL, DEEP):\n");
+	freeLinkedList(NULL, DEEP);
 
-	freeLinkedList(list);
+	freeLinkedList(list, DEEP);
 }
 
 void testWithoutConstructor() {
@@ -574,8 +568,8 @@ void testWithoutConstructor() {
 	printf("removeNode(list, 1):\n");
 	removeNode(list, (void*) &tmp);
 
-	printf("freeLinkedList(list):\n");
-	freeLinkedList(list);
+	printf("freeLinkedList(list, DEEP):\n");
+	freeLinkedList(list, DEEP);
 }
 
 void testWithoutDestructor() {
@@ -611,8 +605,8 @@ void testWithoutDestructor() {
 	printf("removeNode(list, 1):\n");
 	removeNode(list, (void*) &tmp);
 
-	printf("freeLinkedList(list):\n");
-	freeLinkedList(list);
+	printf("freeLinkedList(list, DEEP):\n");
+	freeLinkedList(list, DEEP);
 }
 
 void testWithoutEquals() {
@@ -648,8 +642,8 @@ void testWithoutEquals() {
 	printf("removeNode(list, 1):\n");
 	removeNode(list, (void*) &tmp);
 
-	printf("freeLinkedList(list):\n");
-	freeLinkedList(list);
+	printf("freeLinkedList(list, DEEP):\n");
+	freeLinkedList(list, DEEP);
 }
 
 void* damagedConstructor(void *data) {
@@ -690,8 +684,8 @@ void testDamagedList() {
 	printf("removeNode(list, 1):\n");
 	removeNode(list, (void*) &tmp);
 
-	printf("freeLinkedList(list):\n");
-	freeLinkedList(list);
+	printf("freeLinkedList(list, DEEP):\n");
+	freeLinkedList(list, DEEP);
 }
 
 int main() {

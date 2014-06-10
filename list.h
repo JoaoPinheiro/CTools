@@ -16,8 +16,7 @@ typedef struct _linked_list_ {
 typedef enum {DEEP, SHALLOW} copytype;
 
 linkedlist* createLinkedList();
-void freeLinkedList(linkedlist *list);
-void freeLinkedListShallow(linkedlist *list);
+void freeLinkedList(linkedlist *list, copytype type);
 void addNode(linkedlist *list, void *value);
 void removeNode(linkedlist *list, void *value);
 int containsValue(linkedlist *list, void *value);
