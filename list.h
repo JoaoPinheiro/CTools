@@ -20,7 +20,7 @@ void freeLinkedList(linkedlist *list, copytype type);
 void addNode(linkedlist *list, void *value);
 void removeNode(linkedlist *list, void *value);
 int containsValue(linkedlist *list, void *value);
-void* getLinkedListValueReference(linkedlist *list, void *value);
+void* getValue(linkedlist *list, void *value);
 void mapLinkedList(linkedlist *list, void (*funcp)(void*));
 linkedlist* copyLinkedList(linkedlist *list, copytype type);
 void** linkedListToArray(linkedlist *list, int *size);

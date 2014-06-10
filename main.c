@@ -231,7 +231,7 @@ void testRepeatItems() {
 	printf("Passed\n");
 }
 
-void testGetLinkedListValueReference() {
+void testGetValue() {
 	int tmp = 0;
 	int *value = NULL;
 	linkedlist *list = createLinkedList();
@@ -239,12 +239,12 @@ void testGetLinkedListValueReference() {
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testGetLinkedListValueReference()\n");
+	printf("\n# Start testGetValue()\n");
 
 	tmp = 0;
-	value = (int*) getLinkedListValueReference(list, &tmp);
+	value = (int*) getValue(list, &tmp);
 	if (!(value == NULL)) {
-		printf("Error in getLinkedListValueReference(list, 0); on list {}; shouldn't contain value\n");
+		printf("Error in getValue(list, 0); on list {}; shouldn't contain value\n");
 		exit(-1);
 	}
 
@@ -252,12 +252,12 @@ void testGetLinkedListValueReference() {
 	tmp = 2; addNode(list, (void*) &tmp);
 	tmp = 3; addNode(list, (void*) &tmp);
 
-	value = (int*) getLinkedListValueReference(list, &tmp);
+	value = (int*) getValue(list, &tmp);
 	if (value == NULL) {
-		printf("Error in getLinkedListValueReference(list, 3); on list {1, 2, 3}; should contain value\n");
+		printf("Error in getValue(list, 3); on list {1, 2, 3}; should contain value\n");
 		exit(-1);
 	} else if (!(*value == 3)) {
-		printf("Error in getLinkedListValueReference(list, 3); on list {1, 2, 3}; wrong value\n");
+		printf("Error in getValue(list, 3); on list {1, 2, 3}; wrong value\n");
 		exit(-1);
 	}
 
@@ -347,7 +347,7 @@ void testDeepCopyLinkedList() {
 	mapLinkedList(newlist, &printElement);
 
 	tmp = 2;
-	value = (int*) getLinkedListValueReference(list, &tmp);
+	value = (int*) getValue(list, &tmp);
 
 	*value = 4;
 	tmp = 4;
@@ -408,7 +408,7 @@ void testShallowCopyLinkedList() {
 	mapLinkedList(newlist, &printElement);
 
 	tmp = 2;
-	value = (int*) getLinkedListValueReference(list, &tmp);
+	value = (int*) getValue(list, &tmp);
 
 	*value = 4;
 	tmp = 4;
@@ -505,8 +505,8 @@ void testInvalidArguments() {
 	printf("containsValue(NULL, 1):\n");
 	containsValue(NULL, (void*) &tmp);
 
-	printf("getLinkedListValueReference(NULL, 1):\n");
-	getLinkedListValueReference(NULL, (void*) &tmp);
+	printf("getValue(NULL, 1):\n");
+	getValue(NULL, (void*) &tmp);
 
 	printf("mapLinkedList(NULL, NULL):\n");
 	mapLinkedList(NULL, NULL);
@@ -553,8 +553,8 @@ void testWithoutConstructor() {
 	printf("containsValue(list, 1):\n");
 	containsValue(list, (void*) &tmp);
 
-	printf("getLinkedListValueReference(list, 1):\n");
-	getLinkedListValueReference(list, (void*) &tmp);
+	printf("getValue(list, 1):\n");
+	getValue(list, (void*) &tmp);
 
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
@@ -590,8 +590,8 @@ void testWithoutDestructor() {
 	printf("containsValue(list, 1):\n");
 	containsValue(list, (void*) &tmp);
 
-	printf("getLinkedListValueReference(list, 1):\n");
-	getLinkedListValueReference(list, (void*) &tmp);
+	printf("getValue(list, 1):\n");
+	getValue(list, (void*) &tmp);
 
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
@@ -627,8 +627,8 @@ void testWithoutEquals() {
 	printf("containsValue(list, 1):\n");
 	containsValue(list, (void*) &tmp);
 
-	printf("getLinkedListValueReference(list, 1):\n");
-	getLinkedListValueReference(list, (void*) &tmp);
+	printf("getValue(list, 1):\n");
+	getValue(list, (void*) &tmp);
 
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
@@ -669,8 +669,8 @@ void testDamagedList() {
 	printf("containsValue(list, 1):\n");
 	containsValue(list, (void*) &tmp);
 
-	printf("getLinkedListValueReference(list, 1):\n");
-	getLinkedListValueReference(list, (void*) &tmp);
+	printf("getValue(list, 1):\n");
+	getValue(list, (void*) &tmp);
 
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
@@ -695,7 +695,7 @@ int main() {
 	getc(stdin);
 	testRepeatItems();
 	getc(stdin);
-	testGetLinkedListValueReference();
+	testGetValue();
 	getc(stdin);
 	testMapLinkedList();
 	getc(stdin);

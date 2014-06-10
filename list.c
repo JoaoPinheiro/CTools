@@ -173,20 +173,20 @@ int containsValue(linkedlist *list, void *value) {
 }
 
 /* Returns a reference to the first element with the given value */
-void* getLinkedListValueReference(linkedlist *list, void *value) {
+void* getValue(linkedlist *list, void *value) {
 	struct _list_node_ *node = NULL;
 
 	if (value == NULL) {
-		printCToolsMessage("getLinkedListValueReference", "Value is NULL");
+		printCToolsMessage("getValue", "Value is NULL");
 		return NULL;
 	} else if (list == NULL) {
-		printCToolsMessage("getLinkedListValueReference", "List is NULL");
+		printCToolsMessage("getValue", "List is NULL");
 		return NULL;
 	} else if (list->head == NULL) {
-		printCToolsMessage("getLinkedListValueReference", "List HEAD is NULL");
+		printCToolsMessage("getValue", "List HEAD is NULL");
 		return NULL;
 	} else if (list->equals == NULL) {
-		printCToolsMessage("getLinkedListValueReference", "Equals function is NULL");
+		printCToolsMessage("getValue", "Equals function is NULL");
 		return NULL;
 	}
 
