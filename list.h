@@ -13,13 +13,17 @@ typedef struct _linked_list_ {
 	void (*destructor)(void*);
 } linkedlist;
 
+typedef enum {DEEP, SHALLOW} copytype;
+
 linkedlist* createLinkedList();
 void freeLinkedList(linkedlist *list);
+void freeLinkedListShallow(linkedlist *list);
 void addNode(linkedlist *list, void *value);
 void removeNode(linkedlist *list, void *value);
 int containsValue(linkedlist *list, void *value);
 void* getLinkedListValueReference(linkedlist *list, void *value);
 void mapLinkedList(linkedlist *list, void (*funcp)(void*));
+linkedlist* copyLinkedList(linkedlist *list, copytype type);
 void** linkedListToArray(linkedlist *list, int *size);
 
 #endif

@@ -22,6 +22,7 @@ linkedlist* createLinkedList() {
 	dummynode = malloc(sizeof(struct _list_node_));
 	if (dummynode == NULL) {
 		printCToolsMessage("createLinkedList", "Not enough memory");
+		free(list);
 		return NULL;
 	}
 
@@ -68,8 +69,41 @@ void freeLinkedList(linkedlist *list) {
 	free(list);
 }
 
+/* Releases all the memory allocated by the structure of the link list but not its contents. */
+void freeLinkedListShallow(linkedlist *list) {
+	struct _list_node_ *nextnode = NULL;
+	struct _list_node_ *currentnode = NULL;
+
+	if (list == NULL) {
+		printCToolsMessage("freeLinkedList", "List is NULL");
+		return;
+	} else if (list->head == NULL) {
+		printCToolsMessage("freeLinkedList", "List HEAD is NULL");
+		return;
+	} else if (list->destructor == NULL) {
+		printCToolsMessage("freeLinkedList", "Destructor function is NULL");
+		return;
+	}
+
+	nextnode = list->head->next;
+	currentnode = NULL;
+
+	while (nextnode != NULL) {
+		currentnode = nextnode;
+		nextnode = currentnode->next;
+		if (currentnode->value == NULL) {
+			printCToolsMessage("freeLinkedList", "Contained value is NULL");
+		}
+		free(currentnode);
+	}
+
+	free(list->head);
+	free(list);
+}
+
 /* Adds a new value to the beginning of the list */
 void addNode(linkedlist *list, void *value) {
+	void *newvalue = NULL;
 	struct _list_node_ *newnode = NULL;
 
 	if (value == NULL) {
@@ -92,7 +126,8 @@ void addNode(linkedlist *list, void *value) {
 		return;
 	}
 
-	newnode->value = list->constructor(value);
+	newvalue = list->constructor(value);
+	newnode->value = newvalue;
 	newnode->next = list->head->next;
 	list->head->next = newnode;
 }
@@ -169,7 +204,7 @@ int containsValue(linkedlist *list, void *value) {
 	return 0;
 }
 
-/* Returns the first element with the given value */
+/* Returns a reference to the first element with the given value */
 void* getLinkedListValueReference(linkedlist *list, void *value) {
 	struct _list_node_ *node = NULL;
 
@@ -225,6 +260,70 @@ void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 		}
 		node = node->next;
 	}
+}
+
+/* Generates a copy of the list */
+linkedlist* copyLinkedList(linkedlist *list, copytype type) {
+	linkedlist *newlist = NULL;
+	struct _list_node_ *newnode = NULL;
+	struct _list_node_ *previousnode = NULL;
+	struct _list_node_ *node = NULL;
+	void *newvalue = NULL;
+
+
+	if (list == NULL) {
+		printCToolsMessage("copyLinkedList", "List is NULL");
+		return NULL;
+	} else if (list->head == NULL) {
+		printCToolsMessage("copyLinkedList", "List HEAD is NULL");
+		return NULL;
+	} else if (list->constructor == NULL) {
+		printCToolsMessage("copyLinkedList","Constructor function is NULL");
+		return NULL;
+	}
+
+	newlist = createLinkedList();
+	newlist->equals = list->equals;
+	newlist->constructor = list->constructor;
+	newlist->destructor = list->destructor;
+	previousnode = newlist->head;
+	node = list->head->next;
+	while (node != NULL) {
+		newnode = malloc(sizeof(struct _list_node_));
+		if (newnode == NULL) {
+			printCToolsMessage("copyLinkedList","Not enough memory");
+			freeLinkedList(newlist);
+			return NULL;
+		}
+		if (node->value == NULL) {
+			printCToolsMessage("copyLinkedList", "Contained value is NULL");
+			newvalue = NULL;
+		} else if (type == DEEP) {
+			newvalue = list->constructor(node->value);
+			if (newvalue == NULL) {
+				printCToolsMessage("copyLinkedList","Not enough memory");
+				freeLinkedList(newlist);
+				return NULL;
+			}
+		} else {
+			newvalue = node->value;
+		}
+		/*} else {
+			newvalue = list->constructor(node->value);
+			if (newvalue == NULL) {
+				printCToolsMessage("copyLinkedList","Not enough memory");
+				freeLinkedList(newlist);
+				return NULL;
+			}
+		}*/
+		newnode->value = newvalue;
+		newnode->next = NULL;
+		previousnode->next = newnode;
+		previousnode = newnode;
+		node = node->next;
+	}
+
+	return newlist;
 }
 
 /* Returns an array with pointers to all the elements of the list */

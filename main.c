@@ -304,6 +304,128 @@ void testMapLinkedList() {
 	freeLinkedList(list);
 }
 
+void testDeepCopyLinkedList() {
+	int tmp = 0;
+	int *value = 0;
+	linkedlist *newlist = NULL;
+	linkedlist *list = createLinkedList();
+	list->equals = &equals;
+	list->constructor = &constructor;
+	list->destructor = &destructor;
+
+	printf("\n# Start testDeepCopyLinkedList()\n");
+
+	newlist = copyLinkedList(list, DEEP);
+	if (newlist == NULL) {
+		printf("Error in copyLinkedList(list, DEEP); newlist is NULL\n");
+		exit(-1);
+	}
+
+	printf("Print newlist {}:\n");
+	mapLinkedList(newlist, &printElement);
+
+	tmp = 1; addNode(list, (void*) &tmp);
+	tmp = 2; addNode(list, (void*) &tmp);
+	tmp = 3; addNode(list, (void*) &tmp);
+
+	printf("Print list {1, 2, 3}:\n");
+	mapLinkedList(list, &printElement);
+	printf("Print new list {}:\n");
+	mapLinkedList(newlist, &printElement);
+	freeLinkedList(newlist);
+
+	newlist = NULL;
+	newlist = copyLinkedList(list, DEEP);
+	if (newlist == NULL) {
+		printf("Error in copyLinkedList(list, DEEP); newlist is NULL\n");
+		exit(-1);
+	}
+
+	printf("Print list {1, 2, 3}:\n");
+	mapLinkedList(list, &printElement);
+	printf("Print new list {1, 2, 3}:\n");
+	mapLinkedList(newlist, &printElement);
+
+	tmp = 2;
+	value = (int*) getLinkedListValueReference(list, &tmp);
+
+	*value = 4;
+	tmp = 4;
+	if (containsValue(newlist, (void*) &tmp)) {
+		printf("Error in containsValue(newlist, 4) on list {1, 2, 3}; shouldn't contain value\n");
+		exit(-1);
+	}
+
+	printf("Print list {1, 4, 3}:\n");
+	mapLinkedList(list, &printElement);
+	printf("Print new list {1, 2, 3}:\n");
+	mapLinkedList(newlist, &printElement);
+
+	freeLinkedList(newlist);
+	freeLinkedList(list);
+}
+
+void testShallowCopyLinkedList() {
+	int tmp = 0;
+	int *value = 0;
+	linkedlist *newlist = NULL;
+	linkedlist *list = createLinkedList();
+	list->equals = &equals;
+	list->constructor = &constructor;
+	list->destructor = &destructor;
+
+	printf("\n# Start testShallowCopyLinkedList()\n");
+
+	newlist = copyLinkedList(list, SHALLOW);
+	if (newlist == NULL) {
+		printf("Error in copyLinkedList(list, SHALLOW); newlist is NULL\n");
+		exit(-1);
+	}
+
+	printf("Print newlist {}:\n");
+	mapLinkedList(newlist, &printElement);
+
+	tmp = 1; addNode(list, (void*) &tmp);
+	tmp = 2; addNode(list, (void*) &tmp);
+	tmp = 3; addNode(list, (void*) &tmp);
+
+	printf("Print list {1, 2, 3}:\n");
+	mapLinkedList(list, &printElement);
+	printf("Print new list {}:\n");
+	mapLinkedList(newlist, &printElement);
+	freeLinkedListShallow(newlist);
+
+	newlist = NULL;
+	newlist = copyLinkedList(list, SHALLOW);
+	if (newlist == NULL) {
+		printf("Error in copyLinkedList(list, SHALLOW); newlist is NULL\n");
+		exit(-1);
+	}
+
+	printf("Print list {1, 2, 3}:\n");
+	mapLinkedList(list, &printElement);
+	printf("Print new list {1, 2, 3}:\n");
+	mapLinkedList(newlist, &printElement);
+
+	tmp = 2;
+	value = (int*) getLinkedListValueReference(list, &tmp);
+
+	*value = 4;
+	tmp = 4;
+	if (!containsValue(newlist, (void*) &tmp)) {
+		printf("Error in containsValue(newlist, 4) on list {1, 4, 3}; should contain value\n");
+		exit(-1);
+	}
+
+	printf("Print list {1, 4, 3}:\n");
+	mapLinkedList(list, &printElement);
+	printf("Print new list {1, 4, 3}:\n");
+	mapLinkedList(newlist, &printElement);
+
+	freeLinkedListShallow(newlist);
+	freeLinkedList(list);
+}
+
 void testLinkedListToArray() {
 	int tmp = 0;
 	int i = 0;
@@ -398,6 +520,12 @@ void testInvalidArguments() {
 	printf("mapLinkedList(list, NULL):\n");
 	mapLinkedList(list, NULL);
 
+	printf("copyLinkedList(NULL, DEEP):\n");
+	copyLinkedList(NULL, DEEP);
+
+	printf("copyLinkedList(NULL, SHALLOW):\n");
+	copyLinkedList(NULL, SHALLOW);
+
 	printf("linkedListToArray(NULL, NULL):\n");
 	linkedListToArray(NULL, NULL);
 
@@ -437,6 +565,9 @@ void testWithoutConstructor() {
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
 
+	printf("copyLinkedList(list, DEEP):\n");
+	copyLinkedList(list, DEEP);
+
 	printf("linkedListToArray(list, &size):\n");
 	linkedListToArray(list, &size);
 
@@ -471,6 +602,9 @@ void testWithoutDestructor() {
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
 
+	printf("copyLinkedList(list, DEEP):\n");
+	copyLinkedList(list, DEEP);
+
 	printf("linkedListToArray(list, &size):\n");
 	linkedListToArray(list, &size);
 
@@ -504,6 +638,9 @@ void testWithoutEquals() {
 
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
+
+	printf("copyLinkedList(list, DEEP):\n");
+	copyLinkedList(list, DEEP);
 
 	printf("linkedListToArray(list, &size):\n");
 	linkedListToArray(list, &size);
@@ -544,6 +681,9 @@ void testDamagedList() {
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
 
+	printf("copyLinkedList(list, DEEP):\n");
+	copyLinkedList(list, DEEP);
+
 	printf("linkedListToArray(list, &size):\n");
 	linkedListToArray(list, &size);
 
@@ -564,6 +704,10 @@ int main() {
 	testGetLinkedListValueReference();
 	getc(stdin);
 	testMapLinkedList();
+	getc(stdin);
+	testDeepCopyLinkedList();
+	getc(stdin);
+	testShallowCopyLinkedList();
 	getc(stdin);
 	testLinkedListToArray();
 	getc(stdin);
