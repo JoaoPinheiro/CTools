@@ -169,6 +169,37 @@ int containsValue(linkedlist *list, void *value) {
 	return 0;
 }
 
+/* Returns the first element with the given value */
+void* getLinkedListValueReference(linkedlist *list, void *value) {
+	struct _list_node_ *node = NULL;
+
+	if (value == NULL) {
+		printCToolsMessage("getLinkedListValueReference", "Value is NULL");
+		return NULL;
+	} else if (list == NULL) {
+		printCToolsMessage("getLinkedListValueReference", "List is NULL");
+		return NULL;
+	} else if (list->head == NULL) {
+		printCToolsMessage("getLinkedListValueReference", "List HEAD is NULL");
+		return NULL;
+	} else if (list->equals == NULL) {
+		printCToolsMessage("getLinkedListValueReference", "Equals function is NULL");
+		return NULL;
+	}
+
+	node = list->head->next;
+
+	while (node != NULL) {
+		if (node->value == NULL) {
+			printCToolsMessage("containsValue", "Contained value is NULL");
+		} else if (list->equals(node->value, value)) {
+			return node->value;
+		}
+		node = node->next;
+	}
+	return NULL;
+}
+
 /* Applies a function to each element of the list */
 void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 	struct _list_node_ *node = NULL;
@@ -194,4 +225,51 @@ void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 		}
 		node = node->next;
 	}
+}
+
+/* Returns an array with pointers to all the elements of the list */
+void** linkedListToArray(linkedlist *list, int *size) {
+	struct _list_node_ *node = NULL;
+	void **array = NULL;
+	int count = 0;
+	int i = 0;
+
+	if (size == NULL) {
+		printCToolsMessage("linkedListToArray", "Size pointer is NULL");
+		return NULL;
+	} else if (list == NULL) {
+		printCToolsMessage("linkedListToArray", "List is NULL");
+		return NULL;
+	} else if (list->head == NULL) {
+		printCToolsMessage("linkedListToArray", "List HEAD is NULL");
+		return NULL;
+	}
+
+	node = list->head->next;
+	count = 0;
+
+	while (node != NULL) {
+		count++;
+		node = node->next;
+	}
+
+	node = list->head->next;
+
+	array = malloc(count * sizeof(void*));
+	if (array == NULL) {
+		printCToolsMessage("linkedListToArray", "Not enough memory");
+		return NULL;
+	}
+
+	i = 0;
+	while (node != NULL) {
+		array[i++] = node->value;
+		if (node->value == NULL) {
+			printCToolsMessage("mapLinkedList", "Contained value is NULL");
+		}
+		node = node->next;
+	}
+
+	*size = count;
+	return array;
 }

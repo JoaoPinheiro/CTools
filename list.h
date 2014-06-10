@@ -15,9 +15,11 @@ typedef struct _linked_list_ {
 
 linkedlist* createLinkedList();
 void freeLinkedList(linkedlist *list);
-void mapLinkedList(linkedlist *list, void (*funcp)(void*));
 void addNode(linkedlist *list, void *value);
 void removeNode(linkedlist *list, void *value);
 int containsValue(linkedlist *list, void *value);
+void* getLinkedListValueReference(linkedlist *list, void *value);
+void mapLinkedList(linkedlist *list, void (*funcp)(void*));
+void** linkedListToArray(linkedlist *list, int *size);
 
 #endif
