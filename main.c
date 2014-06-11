@@ -30,9 +30,6 @@ void testCreateAndFree() {
 
 	printf("\n# Start testCreateAndFree()\n");
 	list = createLinkedList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
 
 	if (list == NULL) {
 		printf("Failed to create list\n");
@@ -41,6 +38,10 @@ void testCreateAndFree() {
 		printf("Failed to create list head\n");
 		exit(-1);
 	}
+
+	list->equals = &equals;
+	list->constructor = &constructor;
+	list->destructor = &destructor;
 
 	freeLinkedList(list, DEEP);
 
