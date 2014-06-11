@@ -486,185 +486,27 @@ void testLinkedListToArray() {
 	freeLinkedList(list, DEEP);
 }
 
-void testInvalidArguments() {
-	int tmp = 0;
-	int size = 0;
-	linkedlist *list = createLinkedList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
-
-	printf("\n# Start testInvalidArguments()\n");
-
-	printf("addNode(NULL, 1):\n");
-	tmp = 1;
-	addNode(NULL, (void*) &tmp);
-
-	printf("removeNode(NULL, 1):\n");
-	removeNode(NULL, (void*) &tmp);
-
-	printf("containsValue(NULL, 1):\n");
-	containsValue(NULL, (void*) &tmp);
-
-	printf("getValue(NULL, 1):\n");
-	getValue(NULL, (void*) &tmp);
-
-	printf("mapLinkedList(NULL, NULL):\n");
-	mapLinkedList(NULL, NULL);
-
-	printf("mapLinkedList(NULL, &printElement):\n");
-	mapLinkedList(NULL, &printElement);
-
-	printf("mapLinkedList(list, NULL):\n");
-	mapLinkedList(list, NULL);
-
-	printf("copyLinkedList(NULL, DEEP):\n");
-	copyLinkedList(NULL, DEEP);
-
-	printf("linkedListToArray(NULL, NULL):\n");
-	linkedListToArray(NULL, NULL);
-
-	printf("linkedListToArray(list, NULL):\n");
-	linkedListToArray(list, NULL);
-
-	printf("linkedListToArray(NULL, &size):\n");
-	linkedListToArray(NULL, &size);
-
-	printf("freeLinkedList(NULL, DEEP):\n");
-	freeLinkedList(NULL, DEEP);
-
-	freeLinkedList(list, DEEP);
-}
-
-void testWithoutConstructor() {
-	int tmp = 0;
-	int size = 0;
-	linkedlist *list = createLinkedList();
-	list->equals = &equals;
-	list->destructor = &destructor;
-
-	printf("\n# Start testWithoutConstructor()\n");
-
-	printf("addNode(list, {1, 2, 3}):\n");
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
-
-	tmp = 1;
-	printf("containsValue(list, 1):\n");
-	containsValue(list, (void*) &tmp);
-
-	printf("getValue(list, 1):\n");
-	getValue(list, (void*) &tmp);
-
-	printf("mapLinkedList(list, &printElement):\n");
-	mapLinkedList(list, &printElement);
-
-	printf("copyLinkedList(list, DEEP):\n");
-	copyLinkedList(list, DEEP);
-
-	printf("linkedListToArray(list, &size):\n");
-	linkedListToArray(list, &size);
-
-	printf("removeNode(list, 1):\n");
-	removeNode(list, (void*) &tmp);
-
-	printf("freeLinkedList(list, DEEP):\n");
-	freeLinkedList(list, DEEP);
-}
-
-void testWithoutDestructor() {
-	int tmp = 0;
-	int size = 0;
-	linkedlist *list = createLinkedList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-
-	printf("\n# Start testWithoutDestructor()\n");
-
-	printf("addNode(list, {1, 2, 3}):\n");
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
-
-	tmp = 1;
-	printf("containsValue(list, 1):\n");
-	containsValue(list, (void*) &tmp);
-
-	printf("getValue(list, 1):\n");
-	getValue(list, (void*) &tmp);
-
-	printf("mapLinkedList(list, &printElement):\n");
-	mapLinkedList(list, &printElement);
-
-	printf("copyLinkedList(list, DEEP):\n");
-	copyLinkedList(list, DEEP);
-
-	printf("linkedListToArray(list, &size):\n");
-	linkedListToArray(list, &size);
-
-	printf("removeNode(list, 1):\n");
-	removeNode(list, (void*) &tmp);
-
-	printf("freeLinkedList(list, DEEP):\n");
-	freeLinkedList(list, DEEP);
-}
-
-void testWithoutEquals() {
-	int tmp = 0;
-	int size = 0;
-	linkedlist *list = createLinkedList();
-	list->constructor = &constructor;
-	list->destructor = &destructor;
-
-	printf("\n# Start testWithoutEquals()\n");
-
-	printf("addNode(list, {1, 2, 3}):\n");
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
-
-	tmp = 1;
-	printf("containsValue(list, 1):\n");
-	containsValue(list, (void*) &tmp);
-
-	printf("getValue(list, 1):\n");
-	getValue(list, (void*) &tmp);
-
-	printf("mapLinkedList(list, &printElement):\n");
-	mapLinkedList(list, &printElement);
-
-	printf("copyLinkedList(list, DEEP):\n");
-	copyLinkedList(list, DEEP);
-
-	printf("linkedListToArray(list, &size):\n");
-	linkedListToArray(list, &size);
-
-	printf("removeNode(list, 1):\n");
-	removeNode(list, (void*) &tmp);
-
-	printf("freeLinkedList(list, DEEP):\n");
-	freeLinkedList(list, DEEP);
-}
-
-void* damagedConstructor(void *data) {
+void* constructorNULL(void *data) {
 	return NULL;
 }
 
-void testDamagedList() {
+void testListWithNULL() {
 	int tmp = 0;
 	int size = 0;
+	linkedlist *newlist = NULL;
 	linkedlist *list = createLinkedList();
 	list->equals = &equals;
-	list->constructor = &damagedConstructor;
+	list->constructor = &constructorNULL;
 	list->destructor = &destructor;
 
-	printf("\n# Start testDamagedList()\n");
+	printf("\n# Start testListWithNULL()\n");
 
 	printf("addNode(list, {1, 2, 3}):\n");
 	tmp = 1; addNode(list, (void*) &tmp);
 	tmp = 2; addNode(list, (void*) &tmp);
 	tmp = 3; addNode(list, (void*) &tmp);
+
+	list->constructor = &constructor;
 
 	tmp = 1;
 	printf("containsValue(list, 1):\n");
@@ -677,7 +519,10 @@ void testDamagedList() {
 	mapLinkedList(list, &printElement);
 
 	printf("copyLinkedList(list, DEEP):\n");
-	copyLinkedList(list, DEEP);
+	newlist = copyLinkedList(list, DEEP);
+
+	printf("mapLinkedList(newlist, &printElement):\n");
+	mapLinkedList(newlist, &printElement);
 
 	printf("linkedListToArray(list, &size):\n");
 	linkedListToArray(list, &size);
@@ -687,6 +532,9 @@ void testDamagedList() {
 
 	printf("freeLinkedList(list, DEEP):\n");
 	freeLinkedList(list, DEEP);
+
+	printf("freeLinkedList(newlist, DEEP):\n");
+	freeLinkedList(newlist, DEEP);
 }
 
 int main() {
@@ -706,15 +554,7 @@ int main() {
 	getc(stdin);
 	testLinkedListToArray();
 	getc(stdin);
-	testInvalidArguments();
-	getc(stdin);
-	testWithoutConstructor();
-	getc(stdin);
-	testWithoutDestructor();
-	getc(stdin);
-	testWithoutEquals();
-	getc(stdin);
-	testDamagedList();
+	testListWithNULL();
 
 	return 0;
 }
