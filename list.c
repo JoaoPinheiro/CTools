@@ -50,7 +50,8 @@ void freeLinkedList(linkedlist *list, copytype type) {
 	while (nextnode != NULL) {
 		currentnode = nextnode;
 		nextnode = currentnode->next;
-		if ((currentnode->value != NULL) && (type == DEEP)) {
+		assert(currentnode->value != NULL);
+		if (type == DEEP) {
 			list->destructor(currentnode->value);
 		}
 		free(currentnode);
@@ -96,7 +97,8 @@ void removeNode(linkedlist *list, void *value) {
 	previousnode = list->head;
 	currentnode = list->head->next;
 	while (currentnode != NULL) {
-		if ((currentnode->value != NULL) && (list->equals(currentnode->value, value))) {
+		assert(currentnode->value != NULL);
+		if (list->equals(currentnode->value, value)) {
 			previousnode->next = currentnode->next;
 			list->destructor(currentnode->value);
 			free(currentnode);
@@ -119,7 +121,8 @@ int containsValue(linkedlist *list, void *value) {
 
 	node = list->head->next;
 	while (node != NULL) {
-		if ((node->value != NULL) && (list->equals(node->value, value))) {
+		assert(node->value != NULL);
+		if (list->equals(node->value, value)) {
 			return 1;
 		}
 		node = node->next;
@@ -138,7 +141,8 @@ void* getValue(linkedlist *list, void *value) {
 
 	node = list->head->next;
 	while (node != NULL) {
-		if ((node->value != NULL) && (list->equals(node->value, value))) {
+		assert(node->value != NULL);
+		if (list->equals(node->value, value)) {
 			return node->value;
 		}
 		node = node->next;
@@ -156,9 +160,8 @@ void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 
 	node = list->head->next;
 	while (node != NULL) {
-		if (node->value != NULL) {
-			(*funcp)(node->value);
-		}
+		assert(node->value != NULL);
+		(*funcp)(node->value);
 		node = node->next;
 	}
 }
@@ -189,7 +192,8 @@ linkedlist* copyLinkedList(linkedlist *list, copytype type) {
 			freeLinkedList(newlist, type);
 			return NULL;
 		}
-		if ((node->value != NULL) && (type == DEEP)) {
+		assert(node->value != NULL);
+		if (type == DEEP) {
 			newvalue = list->constructor(node->value);
 			if (newvalue == NULL) {
 				printCToolsMessage("copyLinkedList","Not enough memory");
@@ -236,6 +240,7 @@ void** linkedListToArray(linkedlist *list, int *size) {
 	i = 0;
 	node = list->head->next;
 	while (node != NULL) {
+		assert(node->value != NULL);
 		array[i++] = node->value;
 		node = node->next;
 	}
