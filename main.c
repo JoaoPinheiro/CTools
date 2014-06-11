@@ -2,26 +2,38 @@
 #include <stdlib.h>
 #include "list.h"
 
-/* Required functions */
+/* Required functions; they should be able to receive the value NULL */
 void printElement(void *val) {
-	printf("- %d\n", *(int*) val);
+	if (val == NULL) {
+		printf("- NULL\n");
+	} else {
+		printf("- %d\n", *(int*) val);
+	}
 }
 
 int equals(void *a, void *b) {
-	if (*(int*) a == *(int*) b) {
+	if ((a != NULL) && (b != NULL) && (*(int*) a == *(int*) b)) {
+		return 1;
+	} else if ((a == NULL) && (b == NULL)) {
 		return 1;
 	}
 	return 0;
 }
 
 void* constructor(void *data) {
-	int *newdata = malloc(sizeof(int));
+	int *newdata = NULL;
+	if (data == NULL) {
+		return NULL;
+	}
+	newdata = malloc(sizeof(int));
 	*newdata = *(int*) data;
 	return (void*) newdata;
 }
 
 void destructor(void *element) {
-	free(element);
+	if (element != NULL) {
+		free(element);
+	}
 }
 
 /* Automatic tests */
@@ -493,6 +505,7 @@ void* constructorNULL(void *data) {
 void testListWithNULL() {
 	int tmp = 0;
 	int size = 0;
+	int **array = NULL;
 	linkedlist *newlist = NULL;
 	linkedlist *list = createLinkedList();
 	list->equals = &equals;
@@ -518,23 +531,24 @@ void testListWithNULL() {
 	printf("mapLinkedList(list, &printElement):\n");
 	mapLinkedList(list, &printElement);
 
+	printf("linkedListToArray(list, &size):\n");
+	array = (int**) linkedListToArray(list, &size);
+	free(array);
+
 	printf("copyLinkedList(list, DEEP):\n");
 	newlist = copyLinkedList(list, DEEP);
 
 	printf("mapLinkedList(newlist, &printElement):\n");
 	mapLinkedList(newlist, &printElement);
 
-	printf("linkedListToArray(list, &size):\n");
-	linkedListToArray(list, &size);
+	printf("freeLinkedList(newlist, DEEP):\n");
+	freeLinkedList(newlist, DEEP);
 
 	printf("removeNode(list, 1):\n");
 	removeNode(list, (void*) &tmp);
 
 	printf("freeLinkedList(list, DEEP):\n");
 	freeLinkedList(list, DEEP);
-
-	printf("freeLinkedList(newlist, DEEP):\n");
-	freeLinkedList(newlist, DEEP);
 }
 
 int main() {
