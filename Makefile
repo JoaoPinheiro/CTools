@@ -4,10 +4,10 @@ OBJECTS=list.o main.o
 all: test
 
 test: $(OBJECTS)
-	$(CC) -o $@ -std=c89 -Wall -pedantic $^
+	$(CC) -o $@ $^
 
 %.o:	%.c
-	$(CC) -c -std=c89 -Wall -pedantic $<
+	$(CC) -c -Wall -Wextra -Werror -std=c89 -pedantic-errors $<
 
 clean:
 	@rm -f test list *.o
