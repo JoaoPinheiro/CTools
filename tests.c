@@ -36,7 +36,7 @@ void testCreateAndFree() {
 	linkedlist *list = NULL;
 
 	printf("\n# Start testCreateAndFree()\n");
-	list = createLinkedList();
+	list = createList();
 
 	if (list == NULL) {
 		printf("Failed to create list\n");
@@ -50,14 +50,14 @@ void testCreateAndFree() {
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 
 	printf("Passed\n");
 }
 
 void testBasicOperations() {
 	int tmp = 0;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
@@ -65,14 +65,14 @@ void testBasicOperations() {
 	printf("\n# Start testBasicOperations()\n");
 
 	tmp = 1;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 1) on list {}; shouldn't contain value\n");
 		exit(-1);
 	}
 
-	addNode(list, (void*) &tmp);
+	addValue(list, (void*) &tmp);
 	if (!containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 1) on list {1}; should contain value\n");
 		exit(-1);
@@ -84,32 +84,32 @@ void testBasicOperations() {
 	}
 
 	tmp = 1;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
-		printf("Error in containsValue(list, 1) after removeNode(list, 1); shouldn't contain value\n");
+		printf("Error in containsValue(list, 1) after removeValue(list, 1); shouldn't contain value\n");
 		exit(-1);
 	}
 
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 
 	printf("Passed\n");
 }
 
 void testSeveralItems() {
 	int tmp = 0;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
 	printf("\n# Start testSeveralItems()\n");
 
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
-	tmp = 4; addNode(list, (void*) &tmp);
-	tmp = 5; addNode(list, (void*) &tmp);
-	tmp = 6; addNode(list, (void*) &tmp);
+	tmp = 1; addValue(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
+	tmp = 4; addValue(list, (void*) &tmp);
+	tmp = 5; addValue(list, (void*) &tmp);
+	tmp = 6; addValue(list, (void*) &tmp);
 
 	tmp = 0;
 	if (!containsValue(list, (void*) &tmp)) {
@@ -117,7 +117,7 @@ void testSeveralItems() {
 		exit(-1);
 	}
 
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 
 	tmp = 1;
 	if (!containsValue(list, (void*) &tmp)) {
@@ -136,7 +136,7 @@ void testSeveralItems() {
 	}
 
 	tmp = 1;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 1) on list {2, 3, 4, 5, 6}; shouldn't contain value\n");
 		exit(-1);
@@ -148,7 +148,7 @@ void testSeveralItems() {
 	}
 
 	tmp = 6;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 6) on list {2, 3, 4, 5}; shouldn't contain value\n");
 		exit(-1);
@@ -160,7 +160,7 @@ void testSeveralItems() {
 	}
 
 	tmp = 4;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 4) on list {2, 3, 5}; shouldn't contain value\n");
 		exit(-1);
@@ -171,26 +171,26 @@ void testSeveralItems() {
 		exit(-1);
 	}
 
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 
 	printf("Passed\n");
 }
 
 void testRepeatItems() {
 	int tmp = 0;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
 	printf("\n# Start testRepeatItems()\n");
 
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
+	tmp = 1; addValue(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
+	tmp = 1; addValue(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
 
 	tmp = 0;
 	if (containsValue(list, (void*) &tmp)) {
@@ -214,58 +214,58 @@ void testRepeatItems() {
 	}
 
 	tmp = 2;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 1) on list {1, 3, 1, 3}; shouldn't contain value\n");
 		exit(-1);
 	}
 
 	tmp = 1;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 1) on list {3, 3}; shouldn't contain value\n");
 		exit(-1);
 	}
 
 	tmp = 3;
-	removeNode(list, (void*) &tmp);
+	removeValue(list, (void*) &tmp);
 	if (containsValue(list, (void*) &tmp)) {
 		printf("Error in containsValue(list, 3) on list {}; shouldn't contain value\n");
 		exit(-1);
 	}
 
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 
 	printf("Passed\n");
 }
 
-void testGetValue() {
+void testgetItem() {
 	int tmp = 0;
 	int *value = NULL;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testGetValue()\n");
+	printf("\n# Start testgetItem()\n");
 
 	tmp = 0;
-	value = (int*) getValue(list, &tmp);
+	value = (int*) getItem(list, &tmp);
 	if (!(value == NULL)) {
-		printf("Error in getValue(list, 0); on list {}; shouldn't contain value\n");
+		printf("Error in getItem(list, 0); on list {}; shouldn't contain value\n");
 		exit(-1);
 	}
 
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
+	tmp = 1; addValue(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
 
-	value = (int*) getValue(list, &tmp);
+	value = (int*) getItem(list, &tmp);
 	if (value == NULL) {
-		printf("Error in getValue(list, 3); on list {1, 2, 3}; should contain value\n");
+		printf("Error in getItem(list, 3); on list {1, 2, 3}; should contain value\n");
 		exit(-1);
 	} else if (!(*value == 3)) {
-		printf("Error in getValue(list, 3); on list {1, 2, 3}; wrong value\n");
+		printf("Error in getItem(list, 3); on list {1, 2, 3}; wrong value\n");
 		exit(-1);
 	}
 
@@ -282,80 +282,80 @@ void testGetValue() {
 		exit(-1);
 	}
 
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 
 	printf("Passed\n");
 }
 
 /* Non-automatic tests */
-void testMapLinkedList() {
+void testMapList() {
 	int tmp = 0;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testMapLinkedList()\n");
+	printf("\n# Start testMapList()\n");
 	printf("Print list {}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 
 	tmp = 1;
-	addNode(list, (void*) &tmp);
+	addValue(list, (void*) &tmp);
 	printf("Print list {1}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
 	printf("Print list {1, 2, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 }
 
-void testDeepCopyLinkedList() {
+void testDeepCopyList() {
 	int tmp = 0;
 	int *value = 0;
 	linkedlist *newlist = NULL;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testDeepCopyLinkedList()\n");
+	printf("\n# Start testDeepCopyList()\n");
 
-	newlist = copyLinkedList(list, DEEP);
+	newlist = copyList(list, DEEP);
 	if (newlist == NULL) {
-		printf("Error in copyLinkedList(list, DEEP); newlist is NULL\n");
+		printf("Error in copyList(list, DEEP); newlist is NULL\n");
 		exit(-1);
 	}
 
 	printf("Print newlist {}:\n");
-	mapLinkedList(newlist, &printElement);
+	mapList(newlist, &printElement);
 
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
+	tmp = 1; addValue(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
 
 	printf("Print list {1, 2, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 	printf("Print new list {}:\n");
-	mapLinkedList(newlist, &printElement);
-	freeLinkedList(newlist, DEEP);
+	mapList(newlist, &printElement);
+	freeList(newlist, DEEP);
 
 	newlist = NULL;
-	newlist = copyLinkedList(list, DEEP);
+	newlist = copyList(list, DEEP);
 	if (newlist == NULL) {
-		printf("Error in copyLinkedList(list, DEEP); newlist is NULL\n");
+		printf("Error in copyList(list, DEEP); newlist is NULL\n");
 		exit(-1);
 	}
 
 	printf("Print list {1, 2, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 	printf("Print new list {1, 2, 3}:\n");
-	mapLinkedList(newlist, &printElement);
+	mapList(newlist, &printElement);
 
 	tmp = 2;
-	value = (int*) getValue(list, &tmp);
+	value = (int*) getItem(list, &tmp);
 
 	*value = 4;
 	tmp = 4;
@@ -365,58 +365,58 @@ void testDeepCopyLinkedList() {
 	}
 
 	printf("Print list {1, 4, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 	printf("Print new list {1, 2, 3}:\n");
-	mapLinkedList(newlist, &printElement);
+	mapList(newlist, &printElement);
 
-	freeLinkedList(newlist, DEEP);
-	freeLinkedList(list, DEEP);
+	freeList(newlist, DEEP);
+	freeList(list, DEEP);
 }
 
-void testShallowCopyLinkedList() {
+void testShallowCopyList() {
 	int tmp = 0;
 	int *value = 0;
 	linkedlist *newlist = NULL;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testShallowCopyLinkedList()\n");
+	printf("\n# Start testShallowCopyList()\n");
 
-	newlist = copyLinkedList(list, SHALLOW);
+	newlist = copyList(list, SHALLOW);
 	if (newlist == NULL) {
-		printf("Error in copyLinkedList(list, SHALLOW); newlist is NULL\n");
+		printf("Error in copyList(list, SHALLOW); newlist is NULL\n");
 		exit(-1);
 	}
 
 	printf("Print newlist {}:\n");
-	mapLinkedList(newlist, &printElement);
+	mapList(newlist, &printElement);
 
-	tmp = 1; addNode(list, (void*) &tmp);
-	tmp = 2; addNode(list, (void*) &tmp);
-	tmp = 3; addNode(list, (void*) &tmp);
+	tmp = 1; addValue(list, (void*) &tmp);
+	tmp = 2; addValue(list, (void*) &tmp);
+	tmp = 3; addValue(list, (void*) &tmp);
 
 	printf("Print list {1, 2, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 	printf("Print new list {}:\n");
-	mapLinkedList(newlist, &printElement);
-	freeLinkedList(newlist, SHALLOW);
+	mapList(newlist, &printElement);
+	freeList(newlist, SHALLOW);
 
 	newlist = NULL;
-	newlist = copyLinkedList(list, SHALLOW);
+	newlist = copyList(list, SHALLOW);
 	if (newlist == NULL) {
-		printf("Error in copyLinkedList(list, SHALLOW); newlist is NULL\n");
+		printf("Error in copyList(list, SHALLOW); newlist is NULL\n");
 		exit(-1);
 	}
 
 	printf("Print list {1, 2, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 	printf("Print new list {1, 2, 3}:\n");
-	mapLinkedList(newlist, &printElement);
+	mapList(newlist, &printElement);
 
 	tmp = 2;
-	value = (int*) getValue(list, &tmp);
+	value = (int*) getItem(list, &tmp);
 
 	*value = 4;
 	tmp = 4;
@@ -426,54 +426,54 @@ void testShallowCopyLinkedList() {
 	}
 
 	printf("Print list {1, 4, 3}:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 	printf("Print new list {1, 4, 3}:\n");
-	mapLinkedList(newlist, &printElement);
+	mapList(newlist, &printElement);
 
-	freeLinkedList(newlist, SHALLOW);
-	freeLinkedList(list, DEEP);
+	freeList(newlist, SHALLOW);
+	freeList(list, DEEP);
 }
 
-void testLinkedListToArray() {
+void testListToArray() {
 	int tmp = 0;
 	int i = 0;
 	int elements = 0;
 	int size = 0;
 	int **array = NULL;
-	linkedlist *list = createLinkedList();
+	linkedlist *list = createList();
 	list->equals = &equals;
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testLinkedListToArray()\n");
+	printf("\n# Start testListToArray()\n");
 
-	array = (int**) linkedListToArray(list, &size);
+	array = (int**) listToArray(list, &size);
 	if (size != 0) {
-		printf("Error in linkedListToArray(list, size) for list {}; wrong number of elements\n");
+		printf("Error in listToArray(list, size) for list {}; wrong number of elements\n");
 		exit(-1);
 	} else if (array == NULL) {
-		printf("Error in linkedListToArray(list, size) for list {}; array is NULL\n");
+		printf("Error in listToArray(list, size) for list {}; array is NULL\n");
 		exit(-1);
 	}
 	free(array);
 
 	array = NULL;
-	array = (int**) linkedListToArray(list, &size);
+	array = (int**) listToArray(list, &size);
 	elements = 5;
 	for (i = 0; i < elements; i++) {
 		tmp = i + 1;
-		addNode(list, (void*) &tmp);
+		addValue(list, (void*) &tmp);
 	}
 
 	printf("Print list:\n");
-	mapLinkedList(list, &printElement);
+	mapList(list, &printElement);
 
-	array = (int**) linkedListToArray(list, &size);
+	array = (int**) listToArray(list, &size);
 	if (size != elements) {
-		printf("Error in linkedListToArray(list, size); wrong number of elements\n");
+		printf("Error in listToArray(list, size); wrong number of elements\n");
 		exit(-1);
 	} else if (array == NULL) {
-		printf("Error in linkedListToArray(list, size); array is NULL\n");
+		printf("Error in listToArray(list, size); array is NULL\n");
 		exit(-1);
 	}
 
@@ -490,7 +490,7 @@ void testLinkedListToArray() {
 	}
 
 	free(array);
-	freeLinkedList(list, DEEP);
+	freeList(list, DEEP);
 }
 
 int main() {
@@ -500,15 +500,15 @@ int main() {
 	getc(stdin);
 	testRepeatItems();
 	getc(stdin);
-	testGetValue();
+	testgetItem();
 	getc(stdin);
-	testMapLinkedList();
+	testMapList();
 	getc(stdin);
-	testDeepCopyLinkedList();
+	testDeepCopyList();
 	getc(stdin);
-	testShallowCopyLinkedList();
+	testShallowCopyList();
 	getc(stdin);
-	testLinkedListToArray();
+	testListToArray();
 
 	return 0;
 }

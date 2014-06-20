@@ -11,18 +11,18 @@ static void printCToolsMessage(char *location, char *message) {
 }
 
 /* Creates a new linked list structure */
-linkedlist* createLinkedList() {
+linkedlist* createList() {
 	linkedlist *list = NULL;
 	struct _list_node_ *dummynode = NULL;
 
 	list = malloc(sizeof(linkedlist));
 	if (list == NULL) {
-		printCToolsMessage("createLinkedList", "Not enough memory");
+		printCToolsMessage("createList", "Not enough memory");
 		return NULL;
 	}
 	dummynode = malloc(sizeof(struct _list_node_));
 	if (dummynode == NULL) {
-		printCToolsMessage("createLinkedList", "Not enough memory");
+		printCToolsMessage("createList", "Not enough memory");
 		free(list);
 		return NULL;
 	}
@@ -37,7 +37,7 @@ linkedlist* createLinkedList() {
 }
 
 /* Releases all the memory allocated by the linked list */
-void freeLinkedList(linkedlist *list, copytype type) {
+void freeList(linkedlist *list, copytype type) {
 	struct _list_node_ *nextnode = NULL;
 	struct _list_node_ *currentnode = NULL;
 
@@ -61,8 +61,8 @@ void freeLinkedList(linkedlist *list, copytype type) {
 	free(list);
 }
 
-/* Adds a new value to the beginning of the list */
-void addNode(linkedlist *list, void *value) {
+/* Adds a copy of the value to the beginning of the list */
+void addValue(linkedlist *list, void *value) {
 	void *newvalue = NULL;
 	struct _list_node_ *newnode = NULL;
 
@@ -73,7 +73,7 @@ void addNode(linkedlist *list, void *value) {
 
 	newnode = malloc(sizeof(struct _list_node_));
 	if (newnode == NULL) {
-		printCToolsMessage("addNode","Not enough memory");
+		printCToolsMessage("addValue","Not enough memory");
 		return;
 	}
 
@@ -84,7 +84,7 @@ void addNode(linkedlist *list, void *value) {
 }
 
 /* Removes all occurrences of a given value */
-void removeNode(linkedlist *list, void *value) {
+void removeValue(linkedlist *list, void *value) {
 	struct _list_node_ *previousnode = NULL;
 	struct _list_node_ *currentnode = NULL;
 
@@ -131,7 +131,7 @@ int containsValue(linkedlist *list, void *value) {
 }
 
 /* Returns a reference to the first element with the given value */
-void* getValue(linkedlist *list, void *value) {
+void* getItem(linkedlist *list, void *value) {
 	struct _list_node_ *node = NULL;
 
 	assert(value != NULL);
@@ -151,7 +151,7 @@ void* getValue(linkedlist *list, void *value) {
 }
 
 /* Applies a function to each element of the list */
-void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
+void mapList(linkedlist *list, void (*funcp)(void*)) {
 	struct _list_node_ *node = NULL;
 
 	assert(funcp != NULL);
@@ -167,7 +167,7 @@ void mapLinkedList(linkedlist *list, void (*funcp)(void*)) {
 }
 
 /* Generates a copy of the list */
-linkedlist* copyLinkedList(linkedlist *list, copytype type) {
+linkedlist* copyList(linkedlist *list, copytype type) {
 	linkedlist *newlist = NULL;
 	struct _list_node_ *newnode = NULL;
 	struct _list_node_ *previousnode = NULL;
@@ -178,7 +178,7 @@ linkedlist* copyLinkedList(linkedlist *list, copytype type) {
 	assert(list->head != NULL);
 	assert(list->constructor != NULL);
 
-	newlist = createLinkedList();
+	newlist = createList();
 	newlist->equals = list->equals;
 	newlist->constructor = list->constructor;
 	newlist->destructor = list->destructor;
@@ -188,16 +188,16 @@ linkedlist* copyLinkedList(linkedlist *list, copytype type) {
 	while (node != NULL) {
 		newnode = malloc(sizeof(struct _list_node_));
 		if (newnode == NULL) {
-			printCToolsMessage("copyLinkedList","Not enough memory");
-			freeLinkedList(newlist, type);
+			printCToolsMessage("copyList","Not enough memory");
+			freeList(newlist, type);
 			return NULL;
 		}
 		assert(node->value != NULL);
 		if (type == DEEP) {
 			newvalue = list->constructor(node->value);
 			if (newvalue == NULL) {
-				printCToolsMessage("copyLinkedList","Not enough memory");
-				freeLinkedList(newlist, DEEP);
+				printCToolsMessage("copyList","Not enough memory");
+				freeList(newlist, DEEP);
 				return NULL;
 			}
 		} else {
@@ -214,7 +214,7 @@ linkedlist* copyLinkedList(linkedlist *list, copytype type) {
 }
 
 /* Returns an array with pointers to all the elements of the list */
-void** linkedListToArray(linkedlist *list, int *size) {
+void** listToArray(linkedlist *list, int *size) {
 	struct _list_node_ *node = NULL;
 	void **array = NULL;
 	int count = 0;
@@ -233,7 +233,7 @@ void** linkedListToArray(linkedlist *list, int *size) {
 
 	array = malloc(count * sizeof(void*));
 	if (array == NULL) {
-		printCToolsMessage("linkedListToArray", "Not enough memory");
+		printCToolsMessage("listToArray", "Not enough memory");
 		return NULL;
 	}
 

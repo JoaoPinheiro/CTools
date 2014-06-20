@@ -1,14 +1,14 @@
 CC=gcc
-OBJECTS=list.o main.o
+OBJECTS=list.o tests.o
 
-all: test
+all: tests
 
-test: $(OBJECTS)
+tests: $(OBJECTS)
 	$(CC) -o $@ $^
 
 %.o:	%.c
 	$(CC) -c -Wall -Wextra -Werror -std=c89 -pedantic-errors $<
 
 clean:
-	@rm -f test list *.o
+	@rm -f tests list *.o
 	@echo "All squeaky clean!"
