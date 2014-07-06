@@ -23,6 +23,6 @@ int containsValue(linkedlist *list, void *value);
 void* getItem(linkedlist *list, void *value);
 void mapList(linkedlist *list, void (*funcp)(void*));
 linkedlist* copyList(linkedlist *list, copytype type);
-void** listToArray(linkedlist *list, int *size);
+void** listToArray(linkedlist *list, unsigned int *size);
 
 #endif

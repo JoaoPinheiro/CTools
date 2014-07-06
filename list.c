@@ -214,11 +214,11 @@ linkedlist* copyList(linkedlist *list, copytype type) {
 }
 
 /* Returns an array with pointers to all the elements of the list */
-void** listToArray(linkedlist *list, int *size) {
+void** listToArray(linkedlist *list, unsigned int *size) {
 	struct _list_node_ *node = NULL;
 	void **array = NULL;
-	int count = 0;
-	int i = 0;
+	unsigned int count = 0;
+	unsigned int i = 0;
 
 	assert(size != NULL);
 	assert(list != NULL);
