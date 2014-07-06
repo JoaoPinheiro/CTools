@@ -239,7 +239,7 @@ void testRepeatItems() {
 	printf("Passed\n");
 }
 
-void testgetItem() {
+void testGetItem() {
 	int tmp = 0;
 	int *value = NULL;
 	linkedlist *list = createList();
@@ -247,7 +247,7 @@ void testgetItem() {
 	list->constructor = &constructor;
 	list->destructor = &destructor;
 
-	printf("\n# Start testgetItem()\n");
+	printf("\n# Start testGetItem()\n");
 
 	tmp = 0;
 	value = (int*) getItem(list, &tmp);
@@ -500,7 +500,7 @@ int main() {
 	getc(stdin);
 	testRepeatItems();
 	getc(stdin);
-	testgetItem();
+	testGetItem();
 	getc(stdin);
 	testMapList();
 	getc(stdin);
