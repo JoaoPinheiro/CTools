@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <string.h>
 #include "list.h"
 
 static void printCToolsMessage(char *location, char *message) {
@@ -32,9 +31,10 @@ linkedlist* createList() {
 	dummynode->next = NULL;
 	dummynode->references = 1;
 	list->head = dummynode;
+	list->elemsize = 0;
 	list->equals = NULL;
-	list->destructor = NULL;
-	list->constructor = NULL;
+	list->copy = NULL;
+	list->free = NULL;
 	return list;
 }
 
@@ -45,7 +45,7 @@ void freeList(linkedlist *list) {
 
 	assert(list != NULL);
 	assert(list->head != NULL);
-	assert(list->destructor != NULL);
+	assert(list->free != NULL);
 
 	nextnode = list->head->next;
 	currentnode = NULL;
@@ -54,7 +54,7 @@ void freeList(linkedlist *list) {
 		nextnode = currentnode->next;
 		assert(currentnode->value != NULL);
 		if (--currentnode->references == 0) {
-			list->destructor(currentnode->value);
+			list->free(currentnode->value);
 		}
 		free(currentnode);
 	}
@@ -71,15 +71,21 @@ void addValue(linkedlist *list, void *value) {
 	assert(value != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
-	assert(list->constructor != NULL);
+	assert(list->elemsize != 0);
+	assert(list->copy != NULL);
 
 	newnode = malloc(sizeof(struct _list_node_));
 	if (newnode == NULL) {
 		printCToolsMessage("addValue","Not enough memory");
 		return;
 	}
-
-	newvalue = list->constructor(value);
+	newvalue = malloc(list->elemsize);
+	if (newvalue == NULL) {
+		printCToolsMessage("addValue","Not enough memory");
+		free(newnode);
+		return;
+	}
+	list->copy(newvalue, value);
 	newnode->value = newvalue;
 	newnode->references = 1;
 	newnode->next = list->head->next;
@@ -95,7 +101,7 @@ void removeValue(linkedlist *list, void *value) {
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->equals != NULL);
-	assert(list->destructor != NULL);
+	assert(list->free != NULL);
 
 	previousnode = list->head;
 	currentnode = list->head->next;
@@ -104,7 +110,7 @@ void removeValue(linkedlist *list, void *value) {
 		if (list->equals(currentnode->value, value)) {
 			previousnode->next = currentnode->next;
 			if (--currentnode->references == 0) {
-				list->destructor(currentnode->value);
+				list->free(currentnode->value);
 			}
 			free(currentnode);
 			currentnode = previousnode->next;
@@ -181,12 +187,13 @@ linkedlist* copyList(linkedlist *list) {
 
 	assert(list != NULL);
 	assert(list->head != NULL);
-	assert(list->constructor != NULL);
+	assert(list->elemsize != 0);
+	assert(list->copy != NULL);
 
 	newlist = createList();
 	newlist->equals = list->equals;
-	newlist->constructor = list->constructor;
-	newlist->destructor = list->destructor;
+	newlist->copy = list->copy;
+	newlist->free = list->free;
 
 	previousnode = newlist->head;
 	node = list->head->next;
@@ -197,13 +204,15 @@ linkedlist* copyList(linkedlist *list) {
 			freeList(newlist);
 			return NULL;
 		}
-		assert(node->value != NULL);
-		newvalue = list->constructor(node->value);
+		newvalue = malloc(list->elemsize);
 		if (newvalue == NULL) {
 			printCToolsMessage("copyList","Not enough memory");
 			freeList(newlist);
+			free(newnode);
 			return NULL;
 		}
+		assert(node->value != NULL);
+		list->copy(newvalue, node->value);
 		newnode->value = newvalue;
 		newnode->next = NULL;
 		newnode->references = 1;
@@ -216,7 +225,7 @@ linkedlist* copyList(linkedlist *list) {
 }
 
 /* Returns an array with a copy of each element of the list */
-void* listToArray(linkedlist *list, unsigned int *length, size_t elemsize) {
+void* listToArray(linkedlist *list, unsigned int *length) {
 	struct _list_node_ *node = NULL;
 	void *array = NULL;
 	unsigned int count = 0;
@@ -225,6 +234,8 @@ void* listToArray(linkedlist *list, unsigned int *length, size_t elemsize) {
 	assert(length != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
+	assert(list->elemsize != 0);
+	assert(list->copy != NULL);
 
 	node = list->head->next;
 	count = 0;
@@ -233,7 +244,7 @@ void* listToArray(linkedlist *list, unsigned int *length, size_t elemsize) {
 		node = node->next;
 	}
 
-	array = malloc(count * elemsize);
+	array = malloc(count * list->elemsize);
 	if (array == NULL) {
 		printCToolsMessage("listToArray", "Not enough memory");
 		return NULL;
@@ -243,9 +254,8 @@ void* listToArray(linkedlist *list, unsigned int *length, size_t elemsize) {
 	node = list->head->next;
 	while (node != NULL) {
 		assert(node->value != NULL);
-		/* Casting the array to char* to be able to referece the address on a byte level
-		and casting node->value to char* to avoid issues with unaligned pointers. */
-		memcpy((char*) array + elemsize * i++, (char*) node->value, elemsize);
+		/* Casting the array to char* to be able to perform pointer arithmetic on a byte level */
+		list->copy((char*) array + list->elemsize * i++, node->value);
 		node = node->next;
 	}
 

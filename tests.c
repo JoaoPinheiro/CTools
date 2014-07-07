@@ -9,7 +9,7 @@ void printElement(void *val) {
 	printf("- %d\n", *(int*) val);
 }
 
-int equals(void *a, void *b) {
+int equalsInt(void *a, void *b) {
 	assert(a != NULL);
 	assert(b != NULL);
 	if (*(int*) a == *(int*) b) {
@@ -18,15 +18,14 @@ int equals(void *a, void *b) {
 	return 0;
 }
 
-void* constructor(void *data) {
-	int *newdata = NULL;
-	assert(data != NULL);
-	newdata = malloc(sizeof(int));
-	*newdata = *(int*) data;
-	return (void*) newdata;
+void copyInt(void *destination, void *origin) {
+	assert(destination != NULL);
+	assert(origin != NULL);
+	*(int*) destination = *(int*) origin;
+	return;
 }
 
-void destructor(void *element) {
+void freeInt(void *element) {
 	assert(element != NULL);
 	free(element);
 }
@@ -46,9 +45,10 @@ void testCreateAndFree() {
 		exit(-1);
 	}
 
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	freeList(list);
 
@@ -58,9 +58,10 @@ void testCreateAndFree() {
 void testBasicOperations() {
 	int tmp = 0;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testBasicOperations()\n");
 
@@ -98,9 +99,10 @@ void testBasicOperations() {
 void testSeveralItems() {
 	int tmp = 0;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testSeveralItems()\n");
 
@@ -179,9 +181,10 @@ void testSeveralItems() {
 void testRepeatItems() {
 	int tmp = 0;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testRepeatItems()\n");
 
@@ -243,9 +246,10 @@ void testgetItem() {
 	int tmp = 0;
 	int *value = NULL;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testgetItem()\n");
 
@@ -291,9 +295,10 @@ void testgetItem() {
 void testMapList() {
 	int tmp = 0;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testMapList()\n");
 	printf("Print list {}:\n");
@@ -317,9 +322,10 @@ void testCopyList() {
 	int *value = 0;
 	linkedlist *newlist = NULL;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testCopyList()\n");
 
@@ -380,13 +386,14 @@ void testListToArray() {
 	unsigned int length = 0;
 	int *array = NULL;
 	linkedlist *list = createList();
-	list->equals = &equals;
-	list->constructor = &constructor;
-	list->destructor = &destructor;
+	list->elemsize = sizeof(int);
+	list->equals = &equalsInt;
+	list->copy = &copyInt;
+	list->free = &freeInt;
 
 	printf("\n# Start testListToArray()\n");
 
-	array = (int*) listToArray(list, &length, sizeof(int));
+	array = (int*) listToArray(list, &length);
 	if (length != 0) {
 		printf("Error in listToArray(list, length) for list {}; wrong number of elements\n");
 		exit(-1);
@@ -397,7 +404,7 @@ void testListToArray() {
 	free(array);
 
 	array = NULL;
-	array = (int*) listToArray(list, &length, sizeof(int));
+	array = (int*) listToArray(list, &length);
 	elements = 5;
 	for (i = 0; i < elements; i++) {
 		tmp = i + 1;
@@ -407,7 +414,7 @@ void testListToArray() {
 	printf("Print list:\n");
 	mapList(list, &printElement);
 
-	array = (int*) listToArray(list, &length, sizeof(int));
+	array = (int*) listToArray(list, &length);
 	if (length != elements) {
 		printf("Error in listToArray(list, length); wrong number of elements\n");
 		exit(-1);
