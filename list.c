@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "list.h"
 
 static void printCToolsMessage(char *location, char *message) {
@@ -29,6 +30,7 @@ linkedlist* createList() {
 
 	dummynode->value = NULL;
 	dummynode->next = NULL;
+	dummynode->references = 1;
 	list->head = dummynode;
 	list->equals = NULL;
 	list->destructor = NULL;
@@ -37,7 +39,7 @@ linkedlist* createList() {
 }
 
 /* Releases all the memory allocated by the linked list */
-void freeList(linkedlist *list, copytype type) {
+void freeList(linkedlist *list) {
 	struct _list_node_ *nextnode = NULL;
 	struct _list_node_ *currentnode = NULL;
 
@@ -51,7 +53,7 @@ void freeList(linkedlist *list, copytype type) {
 		currentnode = nextnode;
 		nextnode = currentnode->next;
 		assert(currentnode->value != NULL);
-		if (type == DEEP) {
+		if (--currentnode->references == 0) {
 			list->destructor(currentnode->value);
 		}
 		free(currentnode);
@@ -79,6 +81,7 @@ void addValue(linkedlist *list, void *value) {
 
 	newvalue = list->constructor(value);
 	newnode->value = newvalue;
+	newnode->references = 1;
 	newnode->next = list->head->next;
 	list->head->next = newnode;
 }
@@ -100,7 +103,9 @@ void removeValue(linkedlist *list, void *value) {
 		assert(currentnode->value != NULL);
 		if (list->equals(currentnode->value, value)) {
 			previousnode->next = currentnode->next;
-			list->destructor(currentnode->value);
+			if (--currentnode->references == 0) {
+				list->destructor(currentnode->value);
+			}
 			free(currentnode);
 			currentnode = previousnode->next;
 		} else {
@@ -167,7 +172,7 @@ void mapList(linkedlist *list, void (*funcp)(void*)) {
 }
 
 /* Generates a copy of the list */
-linkedlist* copyList(linkedlist *list, copytype type) {
+linkedlist* copyList(linkedlist *list) {
 	linkedlist *newlist = NULL;
 	struct _list_node_ *newnode = NULL;
 	struct _list_node_ *previousnode = NULL;
@@ -189,22 +194,19 @@ linkedlist* copyList(linkedlist *list, copytype type) {
 		newnode = malloc(sizeof(struct _list_node_));
 		if (newnode == NULL) {
 			printCToolsMessage("copyList","Not enough memory");
-			freeList(newlist, type);
+			freeList(newlist);
 			return NULL;
 		}
 		assert(node->value != NULL);
-		if (type == DEEP) {
-			newvalue = list->constructor(node->value);
-			if (newvalue == NULL) {
-				printCToolsMessage("copyList","Not enough memory");
-				freeList(newlist, DEEP);
-				return NULL;
-			}
-		} else {
-			newvalue = node->value;
+		newvalue = list->constructor(node->value);
+		if (newvalue == NULL) {
+			printCToolsMessage("copyList","Not enough memory");
+			freeList(newlist);
+			return NULL;
 		}
 		newnode->value = newvalue;
 		newnode->next = NULL;
+		newnode->references = 1;
 		previousnode->next = newnode;
 		previousnode = newnode;
 		node = node->next;
@@ -213,14 +215,14 @@ linkedlist* copyList(linkedlist *list, copytype type) {
 	return newlist;
 }
 
-/* Returns an array with pointers to all the elements of the list */
-void** listToArray(linkedlist *list, unsigned int *size) {
+/* Returns an array with a copy of each element of the list */
+void* listToArray(linkedlist *list, unsigned int *length, size_t elemsize) {
 	struct _list_node_ *node = NULL;
-	void **array = NULL;
+	void *array = NULL;
 	unsigned int count = 0;
 	unsigned int i = 0;
 
-	assert(size != NULL);
+	assert(length != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 
@@ -231,7 +233,7 @@ void** listToArray(linkedlist *list, unsigned int *size) {
 		node = node->next;
 	}
 
-	array = malloc(count * sizeof(void*));
+	array = malloc(count * elemsize);
 	if (array == NULL) {
 		printCToolsMessage("listToArray", "Not enough memory");
 		return NULL;
@@ -241,10 +243,12 @@ void** listToArray(linkedlist *list, unsigned int *size) {
 	node = list->head->next;
 	while (node != NULL) {
 		assert(node->value != NULL);
-		array[i++] = node->value;
+		/* Casting the array to char* to be able to referece the address on a byte level
+		and casting node->value to char* to avoid issues with unaligned pointers. */
+		memcpy((char*) array + elemsize * i++, (char*) node->value, elemsize);
 		node = node->next;
 	}
 
-	*size = count;
+	*length = count;
 	return array;
 }
