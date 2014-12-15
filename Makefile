@@ -11,7 +11,7 @@ integration-test: $(INTEGRATION-TEST-OBJECTS)
 	$(CC) -o $@ $^
 
 %.o:	%.c
-	$(CC) -c -g -Wall -Wextra -Werror -std=c89 -pedantic-errors $<
+	$(CC) -c -g -Wall -Wextra -Werror -std=c99 -pedantic-errors $<
 
 clean:
 	@rm -f unit-tests integration-test list *.o

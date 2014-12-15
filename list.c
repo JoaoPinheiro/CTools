@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <assert.h>
 #include "list.h"
 
@@ -12,11 +13,9 @@ static void printCToolsMessage(char *location, char *message) {
 
 /* Creates a new list iterator structure */
 listiterator* createIterator(linkedlist *list) {
-	listiterator *iterator = NULL;
-	
 	assert(list != NULL);
 	
-	iterator = malloc(sizeof(listiterator));
+	listiterator *iterator = malloc(sizeof(listiterator));
 	if (iterator == NULL) {
 		printCToolsMessage("createIterator", "Not enough memory");
 		return NULL;
@@ -28,7 +27,7 @@ listiterator* createIterator(linkedlist *list) {
 }
 
 /* Returns true if there is a next element for the given iterator */
-int hasNext(listiterator *iterator) {
+bool hasNext(listiterator *iterator) {
 	assert(iterator != NULL);
 	assert(iterator->node != NULL);
 	
@@ -82,22 +81,18 @@ static unsigned int* getCurrentReferences(listiterator *iterator) {
 
 /* Creates a new linked list structure */
 linkedlist* createList() {
-	linkedlist *list = NULL;
-	struct _list_node_ *dummynode = NULL;
-	unsigned int *references = NULL;
-	
-	list = malloc(sizeof(linkedlist));
+	linkedlist *list = malloc(sizeof(linkedlist));
 	if (list == NULL) {
 		printCToolsMessage("createList", "Not enough memory");
 		return NULL;
 	}
-	dummynode = malloc(sizeof(struct _list_node_));
+	struct _list_node_ *dummynode = malloc(sizeof(struct _list_node_));
 	if (dummynode == NULL) {
 		printCToolsMessage("createList", "Not enough memory");
 		free(list);
 		return NULL;
 	}
-	references = malloc(sizeof(unsigned int));
+	unsigned int *references = malloc(sizeof(unsigned int));
 	if (references == NULL) {
 		printCToolsMessage("createList", "Not enough memory");
 		free(list);
@@ -118,12 +113,10 @@ linkedlist* createList() {
 
 /* Releases all the memory allocated by the linked list */
 void freeList(linkedlist *list) {
-	listiterator *iterator = NULL;
-	
 	assert(list != NULL);
 	assert(list->head != NULL);
 	
-	iterator = createIterator(list);
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
 		getNext(iterator);
 		removeCurrent(iterator);
@@ -135,28 +128,24 @@ void freeList(linkedlist *list) {
 
 /* Adds a copy of the value to the beginning of the list */
 void addValue(linkedlist *list, void *value) {
-	void *newvalue = NULL;
-	struct _list_node_ *newnode = NULL;
-	unsigned int *references = NULL;
-	
 	assert(value != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->elemsize != 0);
 	assert(list->copy != NULL);
 	
-	newnode = malloc(sizeof(struct _list_node_));
+	struct _list_node_ *newnode = malloc(sizeof(struct _list_node_));
 	if (newnode == NULL) {
 		printCToolsMessage("addValue","Not enough memory");
 		return;
 	}
-	newvalue = malloc(list->elemsize);
+	void *newvalue = malloc(list->elemsize);
 	if (newvalue == NULL) {
 		printCToolsMessage("addValue","Not enough memory");
 		free(newnode);
 		return;
 	}
-	references = malloc(sizeof(unsigned int));
+	unsigned int *references = malloc(sizeof(unsigned int));
 	if (references == NULL) {
 		printCToolsMessage("addValue", "Not enough memory");
 		free(newnode);
@@ -173,17 +162,14 @@ void addValue(linkedlist *list, void *value) {
 
 /* Removes all occurrences of a given value */
 void removeValue(linkedlist *list, void *value) {
-	listiterator *iterator = NULL;
-	void *nodevalue = NULL;
-	
 	assert(value != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->equals != NULL);
 	
-	iterator = createIterator(list);
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
-		nodevalue = getNext(iterator);
+		void *nodevalue = getNext(iterator);
 		assert(nodevalue != NULL);
 		if (list->equals(nodevalue, value)) {
 			removeCurrent(iterator);
@@ -193,41 +179,35 @@ void removeValue(linkedlist *list, void *value) {
 }
 
 /* Checks whether the list contains a value */
-int containsValue(linkedlist *list, void *value) {
-	listiterator *iterator = NULL;
-	void *nodevalue = NULL;
-	
+bool containsValue(linkedlist *list, void *value) {
 	assert(value != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->equals != NULL);
 	
-	iterator = createIterator(list);
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
-		nodevalue = getNext(iterator);
+		void *nodevalue = getNext(iterator);
 		assert(nodevalue != NULL);
 		if (list->equals(nodevalue, value)) {
 			freeIterator(iterator);
-			return 1;
+			return true;
 		}
 	}
 	freeIterator(iterator);
-	return 0;
+	return false;
 }
 
 /* Returns a reference to the first element with the given value */
 void* getItem(linkedlist *list, void *value) {
-	listiterator *iterator = NULL;
-	void *nodevalue = NULL;
-	
 	assert(value != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->equals != NULL);
 	
-	iterator = createIterator(list);
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
-		nodevalue = getNext(iterator);
+		void *nodevalue = getNext(iterator);
 		assert(nodevalue != NULL);
 		if (list->equals(nodevalue, value)) {
 			freeIterator(iterator);
@@ -240,16 +220,13 @@ void* getItem(linkedlist *list, void *value) {
 
 /* Applies a function to each element of the list */
 void mapList(linkedlist *list, void (*funcp)(void*)) {
-	listiterator *iterator = NULL;
-	void *value = NULL;
-	
 	assert(funcp != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 	
-	iterator = createIterator(list);
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
-		value = getNext(iterator);
+		void *value = getNext(iterator);
 		assert(value != NULL);
 		(*funcp)(value);
 	}
@@ -258,37 +235,30 @@ void mapList(linkedlist *list, void (*funcp)(void*)) {
 
 /* Generates a copy of the list */
 linkedlist* copyList(linkedlist *list) {
-	linkedlist *newlist = NULL;
-	struct _list_node_ *newnode = NULL;
-	struct _list_node_ *previousnode = NULL;
-	listiterator *iterator = NULL;
-	void *value = NULL;
-	unsigned int *references = NULL;
-	
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->elemsize != 0);
 	assert(list->copy != NULL);
 	
-	newlist = createList();
+	linkedlist *newlist = createList();
 	newlist->equals = list->equals;
 	newlist->copy = list->copy;
 	newlist->free = list->free;
-	previousnode = newlist->head;
-	iterator = createIterator(list);
+	struct _list_node_ *previousnode = newlist->head;
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
-		newnode = malloc(sizeof(struct _list_node_));
+		struct _list_node_ *newnode = malloc(sizeof(struct _list_node_));
 		if (newnode == NULL) {
 			printCToolsMessage("copyList","Not enough memory");
 			freeList(newlist);
 			freeIterator(iterator);
 			return NULL;
 		}
-		value = getNext(iterator);
+		void *value = getNext(iterator);
 		assert(value != NULL);
 		newnode->value = value;
 		newnode->next = NULL;
-		references = getCurrentReferences(iterator);
+		unsigned int *references = getCurrentReferences(iterator);
 		assert(references != NULL);
 		(*references)++;
 		newnode->references = references;
@@ -301,28 +271,22 @@ linkedlist* copyList(linkedlist *list) {
 
 /* Returns an array with a copy of each element of the list */
 void* listToArray(linkedlist *list, unsigned int *length) {
-	void *array = NULL;
-	unsigned int count = 0;
-	unsigned int i = 0;
-	listiterator *iterator = NULL;
-	void *value = NULL;
-	
 	assert(length != NULL);
 	assert(list != NULL);
 	assert(list->head != NULL);
 	assert(list->elemsize != 0);
 	assert(list->copy != NULL);
 	
-	count = getLength(list);
-	array = malloc(count * list->elemsize);
+	unsigned int count = getLength(list);
+	void *array = malloc(count * list->elemsize);
 	if (array == NULL) {
 		printCToolsMessage("listToArray", "Not enough memory");
 		return NULL;
 	}
-	i = 0;
-	iterator = createIterator(list);
+	unsigned int i = 0;
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
-		value = getNext(iterator);
+		void *value = getNext(iterator);
 		assert(value != NULL);
 		/* Casting the array to char* to be able to perform pointer arithmetic on a byte level */
 		list->copy((char*) array + list->elemsize * i++, value);
@@ -333,13 +297,11 @@ void* listToArray(linkedlist *list, unsigned int *length) {
 }
 
 unsigned int getLength(linkedlist *list) {
-	listiterator *iterator = NULL;
-	unsigned int length = 0;
-	
 	assert(list != NULL);
 	assert(list->head != NULL);
 	
-	iterator = createIterator(list);
+	unsigned int length = 0;
+	listiterator *iterator = createIterator(list);
 	while (hasNext(iterator)) {
 		getNext(iterator);
 		length++;

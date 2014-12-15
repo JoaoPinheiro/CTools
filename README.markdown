@@ -1,6 +1,6 @@
 # CTools
 
-CTools is a library of generic C data structures and algorithms written in ANSI C (C89).
+CTools is a library of generic C data structures and algorithms written according to the C99 standard.
 
 ## License
 
