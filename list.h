@@ -21,6 +21,12 @@ typedef struct _list_iterator_ {
 	struct _list_node_ *previous;
 } listiterator;
 
+listiterator* createIterator(linkedlist *list);
+int hasNext(listiterator *iterator);
+void* getNext(listiterator *iterator);
+void removeCurrent(listiterator *iterator);
+void freeIterator(listiterator *iterator);
+
 linkedlist* createList();
 void freeList(linkedlist *list);
 void addValue(linkedlist *list, void *value);
@@ -30,11 +36,6 @@ void* getItem(linkedlist *list, void *value);
 void mapList(linkedlist *list, void (*funcp)(void*));
 linkedlist* copyList(linkedlist *list);
 void* listToArray(linkedlist *list, unsigned int *length);
-
-listiterator* createIterator(linkedlist *list);
-int hasNext(listiterator *iterator);
-void* getNext(listiterator *iterator);
-void removeCurrent(listiterator *iterator);
-void freeIterator(listiterator *iterator);
+unsigned int getLength(linkedlist *list);
 
 #endif
