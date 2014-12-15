@@ -12,17 +12,12 @@ void printElement(void *val) {
 }
 
 int equalsDraw(void *a, void *b) {
-
-	if (((draw*) a)->star1 == ((draw*) b)->star1 &&
-		((draw*) a)->star2 == ((draw*) b)->star2) {
-		return 1;
-	}
-	return 0;
+	return (((draw*) a)->star1 == ((draw*) b)->star1 && 
+			((draw*) a)->star2 == ((draw*) b)->star2);
 }
 
 void copyDraw(void *destination, void *origin) {
 	*(draw*) destination = *(draw*) origin;
-	return;
 }
 
 void freeDraw(void *element) {
