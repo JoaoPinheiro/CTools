@@ -84,12 +84,11 @@ int main() {
 	
 	printf("Above 9 List (average %f):\n", average9);
 	mapList(newlist, &printElement);
+	freeList(newlist);
 	
 	printf("Original List (average %f):\n", average);
 	mapList(list, &printElement);
-	
 	freeList(list);
-	freeList(newlist);
 	
 	return 0;
 }

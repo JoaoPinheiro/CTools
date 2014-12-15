@@ -365,14 +365,16 @@ void testCopyList() {
 
 	*value = 4;
 	tmp = 4;
-	if (containsValue(newlist, &tmp)) {
-		printf("Error in containsValue(newlist, 4) on list {1, 2, 3}; shouldn't contain value\n");
+	if (!containsValue(newlist, &tmp)) {
+		printf("Error in containsValue(newlist, 4) on list {1, 4, 3}; should contain value\n");
 		exit(-1);
 	}
+	
+	tmp = 5; addValue(list, &tmp);
 
-	printf("Print list {1, 4, 3}:\n");
+	printf("Print list {1, 4, 3, 5}:\n");
 	mapList(list, &printElement);
-	printf("Print new list {1, 2, 3}:\n");
+	printf("Print new list {1, 4, 3}:\n");
 	mapList(newlist, &printElement);
 
 	freeList(newlist);

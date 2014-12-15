@@ -14,6 +14,7 @@ static void printCToolsMessage(char *location, char *message) {
 linkedlist* createList() {
 	linkedlist *list = NULL;
 	struct _list_node_ *dummynode = NULL;
+	unsigned int *references = NULL;
 
 	list = malloc(sizeof(linkedlist));
 	if (list == NULL) {
@@ -26,10 +27,18 @@ linkedlist* createList() {
 		free(list);
 		return NULL;
 	}
+	references = malloc(sizeof(unsigned int));
+	if (references == NULL) {
+		printCToolsMessage("createList", "Not enough memory");
+		free(list);
+		free(dummynode);
+		return NULL;
+	}
 
+	*references = 1;
 	dummynode->value = NULL;
 	dummynode->next = NULL;
-	dummynode->references = 1;
+	dummynode->references = references;
 	list->head = dummynode;
 	list->elemsize = 0;
 	list->equals = NULL;
@@ -53,7 +62,7 @@ void freeList(linkedlist *list) {
 		currentnode = nextnode;
 		nextnode = currentnode->next;
 		assert(currentnode->value != NULL);
-		if (--currentnode->references == 0) {
+		if (--(*currentnode->references) == 0) {
 			list->free(currentnode->value);
 		}
 		free(currentnode);
@@ -67,6 +76,7 @@ void freeList(linkedlist *list) {
 void addValue(linkedlist *list, void *value) {
 	void *newvalue = NULL;
 	struct _list_node_ *newnode = NULL;
+	unsigned int *references = NULL;
 
 	assert(value != NULL);
 	assert(list != NULL);
@@ -85,9 +95,17 @@ void addValue(linkedlist *list, void *value) {
 		free(newnode);
 		return;
 	}
+	references = malloc(sizeof(unsigned int));
+	if (references == NULL) {
+		printCToolsMessage("addValue", "Not enough memory");
+		free(newnode);
+		free(newvalue);
+		return;
+	}
+	*references = 1;
 	list->copy(newvalue, value);
 	newnode->value = newvalue;
-	newnode->references = 1;
+	newnode->references = references;
 	newnode->next = list->head->next;
 	list->head->next = newnode;
 }
@@ -109,7 +127,7 @@ void removeValue(linkedlist *list, void *value) {
 		assert(currentnode->value != NULL);
 		if (list->equals(currentnode->value, value)) {
 			previousnode->next = currentnode->next;
-			if (--currentnode->references == 0) {
+			if (--(*currentnode->references) == 0) {
 				list->free(currentnode->value);
 			}
 			free(currentnode);
@@ -183,7 +201,6 @@ linkedlist* copyList(linkedlist *list) {
 	struct _list_node_ *newnode = NULL;
 	struct _list_node_ *previousnode = NULL;
 	struct _list_node_ *node = NULL;
-	void *newvalue = NULL;
 
 	assert(list != NULL);
 	assert(list->head != NULL);
@@ -204,18 +221,10 @@ linkedlist* copyList(linkedlist *list) {
 			freeList(newlist);
 			return NULL;
 		}
-		newvalue = malloc(list->elemsize);
-		if (newvalue == NULL) {
-			printCToolsMessage("copyList","Not enough memory");
-			freeList(newlist);
-			free(newnode);
-			return NULL;
-		}
-		assert(node->value != NULL);
-		list->copy(newvalue, node->value);
-		newnode->value = newvalue;
+		newnode->value = node->value;
 		newnode->next = NULL;
-		newnode->references = 1;
+		(*node->references)++;
+		newnode->references = node->references;
 		previousnode->next = newnode;
 		previousnode = newnode;
 		node = node->next;
@@ -305,7 +314,7 @@ void removeCurrent(listiterator *iterator){
 	assert(iterator->node != NULL);
 	
 	iterator->previous->next = iterator->node->next;
-	if (--iterator->node->references == 0) {
+	if (--(*iterator->node->references) == 0) {
 		iterator->list->free(iterator->node->value);
 	}
 	free(iterator->node);

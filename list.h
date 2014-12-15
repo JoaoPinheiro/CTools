@@ -4,7 +4,7 @@
 struct _list_node_ {
 	struct _list_node_ *next;
 	void *value;
-	unsigned int references;
+	unsigned int *references;
 };
 
 typedef struct _linked_list_ {
