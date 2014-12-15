@@ -20,9 +20,7 @@ listiterator* createIterator(linkedlist *list) {
 		printCToolsMessage("createIterator", "Not enough memory");
 		return NULL;
 	}
-	iterator->list = list;
-	iterator->previous = list->head;
-	iterator->node = list->head;
+	*iterator = (listiterator) { .list = list, .previous = list->head, .node = list->head };
 	return iterator;
 }
 
@@ -100,14 +98,8 @@ linkedlist* createList() {
 		return NULL;
 	}
 	*references = 1;
-	dummynode->value = NULL;
-	dummynode->next = NULL;
-	dummynode->references = references;
-	list->head = dummynode;
-	list->elemsize = 0;
-	list->equals = NULL;
-	list->copy = NULL;
-	list->free = NULL;
+	*dummynode = (struct _list_node_) { .value = NULL, .next = NULL, .references = references };
+	*list = (linkedlist) { .head = dummynode, .elemsize = 0, .equals = NULL, .copy = NULL, .free = NULL };
 	return list;
 }
 
@@ -154,9 +146,7 @@ void addValue(linkedlist *list, void *value) {
 	}
 	*references = 1;
 	list->copy(newvalue, value);
-	newnode->value = newvalue;
-	newnode->references = references;
-	newnode->next = list->head->next;
+	*newnode = (struct _list_node_) { .value = newvalue, .references = references, .next = list->head->next };
 	list->head->next = newnode;
 }
 
@@ -256,12 +246,11 @@ linkedlist* copyList(linkedlist *list) {
 		}
 		void *value = getNext(iterator);
 		assert(value != NULL);
-		newnode->value = value;
-		newnode->next = NULL;
 		unsigned int *references = getCurrentReferences(iterator);
 		assert(references != NULL);
 		(*references)++;
-		newnode->references = references;
+		*newnode = (struct _list_node_) { .value = value, .next = NULL, .references = references };
+		
 		previousnode->next = newnode;
 		previousnode = newnode;
 	}
