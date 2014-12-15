@@ -262,3 +262,43 @@ void* listToArray(linkedlist *list, unsigned int *length) {
 	*length = count;
 	return array;
 }
+
+/* Creates a new list iterator structure */
+listiterator* createIterator(linkedlist *list) {
+	listiterator *iterator = NULL;
+	
+	assert(list != NULL);
+	
+	iterator = malloc(sizeof(listiterator));
+	if (iterator == NULL) {
+		printCToolsMessage("createIterator", "Not enough memory");
+		return NULL;
+	}
+	iterator->node = list->head;
+	return iterator;
+}
+
+/* Returns true if there is a next element for the given iterator */
+int hasNext(listiterator *iterator) {	
+	assert(iterator != NULL);
+	assert(iterator->node != NULL);
+	
+	return iterator->node->next != NULL;
+}
+
+/* Returns the next value from the list associated with the iterator */
+void* getNext(listiterator *iterator){
+	assert(iterator != NULL);
+	assert(iterator->node != NULL);
+	assert(iterator->node->next != NULL);
+	
+	iterator->node = iterator->node->next;
+	return iterator->node->value;
+}
+
+/* Releases all the memory allocated by the list iterator */
+void freeIterator(listiterator *iterator) {
+	assert(iterator != NULL);
+	
+	free(iterator);
+}

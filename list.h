@@ -15,6 +15,10 @@ typedef struct _linked_list_ {
 	void (*free)(void*);
 } linkedlist;
 
+typedef struct _list_iterator_ {
+	struct _list_node_ *node;
+} listiterator;
+
 linkedlist* createList();
 void freeList(linkedlist *list);
 void addValue(linkedlist *list, void *value);
@@ -24,5 +28,10 @@ void* getItem(linkedlist *list, void *value);
 void mapList(linkedlist *list, void (*funcp)(void*));
 linkedlist* copyList(linkedlist *list);
 void* listToArray(linkedlist *list, unsigned int *length);
+
+listiterator* createIterator(linkedlist *list);
+int hasNext(listiterator *iterator);
+void* getNext(listiterator *iterator);
+void freeIterator(listiterator *iterator);
 
 #endif

@@ -1,14 +1,18 @@
 CC=gcc
-OBJECTS=list.o tests.o
+UNIT-TESTS-OBJECTS=list.o tests.o
+INTEGRATION-TEST-OBJECTS=list.o integration-test.o
 
-all: tests
+all: unit-tests integration-test
 
-tests: $(OBJECTS)
+unit-tests: $(UNIT-TESTS-OBJECTS)
+	$(CC) -o $@ $^
+
+integration-test: $(INTEGRATION-TEST-OBJECTS)
 	$(CC) -o $@ $^
 
 %.o:	%.c
 	$(CC) -c -g -Wall -Wextra -Werror -std=c89 -pedantic-errors $<
 
 clean:
-	@rm -f tests list *.o
+	@rm -f unit-tests integration-test list *.o
 	@echo "All squeaky clean!"
