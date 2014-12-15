@@ -12,8 +12,8 @@ void printElement(void *val) {
 }
 
 int equalsDraw(void *a, void *b) {
-	return (((draw*) a)->star1 == ((draw*) b)->star1 && 
-			((draw*) a)->star2 == ((draw*) b)->star2);
+	return ((draw*) a)->star1 == ((draw*) b)->star1 &&
+			((draw*) a)->star2 == ((draw*) b)->star2;
 }
 
 void copyDraw(void *destination, void *origin) {
@@ -49,11 +49,11 @@ int main() {
 	newlist = copyList(list);
 	
 	/* Remove draws without stars over 9 */
-	iterator = createIterator(list);
+	iterator = createIterator(newlist);
 	while (hasNext(iterator)) {
 		next = getNext(iterator);
 		if (next->star1 <= 9 && next->star2 <= 9) {
-			removeValue(newlist, next);
+			removeCurrent(iterator);
 		}
 	}
 	freeIterator(iterator);

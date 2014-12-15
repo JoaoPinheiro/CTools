@@ -274,6 +274,8 @@ listiterator* createIterator(linkedlist *list) {
 		printCToolsMessage("createIterator", "Not enough memory");
 		return NULL;
 	}
+	iterator->list = list;
+	iterator->previous = list->head;
 	iterator->node = list->head;
 	return iterator;
 }
@@ -292,8 +294,22 @@ void* getNext(listiterator *iterator){
 	assert(iterator->node != NULL);
 	assert(iterator->node->next != NULL);
 	
+	iterator->previous = iterator->node;
 	iterator->node = iterator->node->next;
 	return iterator->node->value;
+}
+
+/* Removes the current value from the list associated with the iterator */
+void removeCurrent(listiterator *iterator){
+	assert(iterator != NULL);
+	assert(iterator->node != NULL);
+	
+	iterator->previous->next = iterator->node->next;
+	if (--iterator->node->references == 0) {
+		iterator->list->free(iterator->node->value);
+	}
+	free(iterator->node);
+	iterator->node = iterator->previous;
 }
 
 /* Releases all the memory allocated by the list iterator */
